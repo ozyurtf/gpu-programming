@@ -187,7 +187,7 @@ So if the memory bandwidth is saturated, this means that GPU is unable to read/w
 - Matrix multiplication is the strongest point of GPU.
 - FPGA is another type of accelerator.
 - Transistors are switches: they pass the current or not pass the current
-- 
+- If you increase the number of GPUs too much, the communicaion overhead between them will be problem. 
 
 
 
