@@ -31,7 +31,25 @@ Heterogeneous parallel programming means developing software that can use multip
 
 <img width="678" alt="image" src="https://github.com/user-attachments/assets/d0ac6f33-d0cb-40cf-925b-466eff31d22b">
 
-At this moment, we have two main goals 
+When we deal with parallel programming, we transition from single-core to multicore and parallel programming architectures. That's why:
+
+- we want to maintain the execution speed of programs that are designed to run on a single core (these are also called sequential programs).
+- we want to maintain the execution speed of programs in which large operations run concurrently.
+- we want to increase the throughput of programs that are designed to run on multiple cores/processors simultaneously (parallel programs)
+
+The challenge in here is to design computer architectures and software development methods that can run older sequential programs efficiently without causing any slowdowns on new hardware and also allow new/highly parallel programs to take advantage of multiple cores and processors simultaneously for increased performance. 
+
+### GPU vs CPU 
+
+<img width="683" alt="image" src="https://github.com/user-attachments/assets/b5226712-6dc6-411a-859d-4b9d1c92fff2">
+
+As we can see from above, the CPU has 4 large complex cores. These cores are designed for general purpose computing. Each of these cores has its own control unit. This control unit is responsible from instruction decoding and execution management. We also see different levels of caches (L1, L2, and L3) that are used for quick data access. Lastly, there is a DRAM (Dynamic Random Access Memory) that serves as the main memory of the system. It stores the data/instructions that are actively used by the CPU.
+
+In the GPU, however, we see smaller and higher number of cores (these are represented as green). These are used for parallel processing. Similarly, we see smaller and higher number of L1 caches and control units. Aside from that, we see a single and larger L2 cache that is shared by all cores and DRAM that stores data/instructions that are actively used by the GPU.
+
+
+
+
 
 
 
