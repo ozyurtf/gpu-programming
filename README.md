@@ -162,7 +162,18 @@ Lastly, the things that should be empahsized:
 
 - Not all parts of a program can be easily parallelized. Some tasks have dependencies or require sequential execution. This limits the amount of work that can be put into the GPU. If only small amount of code is parallelizable, the overall speedup of using GPU on running this code may be limited.
 - CPU and GPU need to communicate with each other whenever there are tasks that can be accelerated by putting some of the work to the GPUs parallel processing units. For instance, let's assume that there is a 3D scene or high resolution graphics and CPU wants to send the data that needs to be rendered and rendering isntructions to GPU. After GPU performs the rendering instructions on the data, it sends the output back to the CPU because CPU may need to perform some additional tasks on this output. Also, the CPU is responsible from managing the system's main memory. When GPU finishes its operations, it may need to send the output to main memory so that other parts of the system can access them and CPU handles this data transfer from GPU to memory. Even if GPU may want to send the output to another parts of the computer such as display without going through the CPU, CPU is still involved in setting up the display and managing the overall process. CPU tells the GPU where to render the output and where to display it. The communication between CPU and GPU takes additional time. If the amount of data that is transferred from/to GPU to/from CPU is large or if CPU and GPU need to communicate with each other very frequently, this may reduce the performance and should be taken into account during the system design.
-- As we mentioned before, GPUs have their own dedicated memory. This memory is called Video RAM (VRAM). It is basically used to store data and intermediate results during the computation. The data rate at which data can be read/written from/to VRAM is called memory bandwidth. So if the memory bandwidth is saturated, this means that GPU is unable to read/write data as quickly as it can process it and this causes to bottleneck in performance. This problem can be solved with using data compression techniques, GPUs with higher memory bandwidth or optimizing memory access patterns. 
+- As we mentioned before, GPUs have their own dedicated memory. This memory is called Video RAM (VRAM). It is basically used to store data and intermediate results during the computation. The data rate at which data can be read/written from/to VRAM is called memory bandwidth. Memory bandwidth is determined based on several factors that are related to the memory system's design and configuration. These factors are like these:
+  - Memory clock speed
+  - Memory bus width
+  - Memory type
+  - Number of memory channels
+  - Memory access patterns
+  - Memory latency
+  - Cache usage
+  - Resource contention
+  - Power and thermal constraints
+
+So if the memory bandwidth is saturated, this means that GPU is unable to read/write data as quickly as it can process it and this causes to bottleneck in performance. This problem can be solved with using data compression techniques, GPUs with higher memory bandwidth or optimizing memory access patterns. 
 
 
 
