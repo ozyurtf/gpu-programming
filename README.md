@@ -57,11 +57,23 @@ GPU can transfer data to/from its memory about 10 times faster than a typical mu
 - on-die memory interfaces
 - relaxed memory model
 
-This is an important point because GPUs need to feed data to many cores simultaneousy for parallel processing.
+This is an important point because GPUs need to feed data to many cores simultaneousy for parallel processing. That's why it should be able to transfer data to/from its memory very quickly.
 
 <img width="500" alt="image" src="https://github.com/user-attachments/assets/ee48dd71-fd18-4643-8ae9-fd18e2985398">
 
+In the picture above, we see the key terms and concepts in computer hardware architecture.
 
+- Chip: A chip is a integrated circuit that combines transistors, resistors, capacitors, and inductors in a single piece of material. These components are interconnected. Chips can perform many different tasks such as processing (e.g., CPU, GPU), memory storage (e.g., RAM, ROM chips), power management, etc. They can be categorized into:
+  - Memory
+  - Processor
+    - Multicore
+    - Single core  
+  - Accelerator
+    - GPU
+    - TPU
+    - FPGA
+   
+So, the question is: how do we choose a processor for our application ? 
 
 
 
