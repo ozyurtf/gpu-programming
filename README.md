@@ -88,7 +88,23 @@ In the picture below, we see the architectures of integrated and discrete GPU.
 
 **Note**: The northbridge is a chip that connects CPU, RAM, and GPU, and that manages data flow between these components.
 
-Discrete GPU: Discrete GPUs have a dedicated hardware and memory. These dedicated hardware and memory allow for more powerful
+Discrete GPU: Discrete GPUs have a dedicated hardware and memory. Therefore, they can work as more powerful processors and they can be designed in such a way that they are optimized for specific graph tasks. With discrete GPU, we can do more complex computations and obtain higher frame rates in applications that require many operations. 
+
+Also, having a separate memory that is dedicated to graphics tasks (VRAM) allows faster data access and this is important point for handling large textures and complex 3D models efficiently. 
+
+But the dedicated hardware and memory and additional complexity increase manufacturing costs, require more energy, and generate more heat that needs to be controlled.
+
+Integrated CPU: The resources are shared between CPU and GPU. The important factor in here is power efficiency. Low energy is a key design goal and this makes integrated CPU ideal for mobile devices.
+
+Combining CPU and GPU reduces the overall chip count and makes manufacturing more simple. 
+
+Because the memory is shared between CPU and GPU, we observe performance bottlencek for graphic intensive tasks in addition to more flexible memory allocation. 
+
+
+
+
+
+
 
 
 
