@@ -128,13 +128,9 @@ Load/store units are specialized circuits that are part of the GPUs. They handle
 
 Load/store units in the GPU are designed in such a way that they combine multiple memory requests into fewer but larger transactions for efficiency. Multiple load/store units operate in parallel to support the many concurrent threads in a GPU. Efficent load/store operations are crucial for tasks such as accessing large datasets. These load/store operations play a key role in matrix multiplications in neural networks. 
 
+One key point is that we should understand the limitations of optimization and parallelization in computing. To achieve significant speedups, we should optimize/parallelize as much of the program as possible and avoid focusing only one part. Because the overall speedup of a system is limited by the portion of the system that cannot be improved.
 
-
-
-
-
-
-
+To predict the maximum speedup for a system, we can use this equation `Execution Time After Improvement = Execution Time Unaffected + Execution Time Affected / Amount of Improvement`
 
 
 
