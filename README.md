@@ -147,7 +147,9 @@ If we want to make this program run 5 times faster, this would not be possible b
 
 20 seconds ≠ 20 seconds + 80 / Amount of Improvement. 
 
-So, in summary, improvement in the application speed depends on the portion that is parallelized. 
+In summary improvement in the application speed depends on the portion that is parallelized. 
+
+
 
 
 
