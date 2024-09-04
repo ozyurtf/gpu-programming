@@ -132,6 +132,24 @@ One key point is that we should understand the limitations of optimization and p
 
 To predict the maximum speedup for a system, we can use this equation `Execution Time After Improvement = Execution Time Unaffected + Execution Time Affected / Amount of Improvement`
 
+For instance, if there is a program that runs in 100 seconds, 80 seconds of this time is spent for multiplication process and if we want to make this program run 4 times faster: 
+
+- Total execution time = 100 seconds
+- Time spent on multiplication = 80 seconds (Execution Time Affected)
+- Time spent on other operations = 20 seconds (Execution Time Unaffected)
+- Target execution time (Execution Time After Improvement) = 100 seconds / 4 = 25 seconds
+
+25 seconds = 20 seconds + 80 / Amount of Improvement $->$ Amount of Improvement = 16. 
+
+So multiplication must be 16 times faster if we want to make this program run 4 times faster. 
+
+If we want to make this program run 5 times faster, this would not be possible because 
+
+20 seconds ≠ 20 seconds + 80 / Amount of Improvement. 
+
+So, in summary, improvement in the application speed depends on the portion that is parallelized. 
+
+
 
 
 
