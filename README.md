@@ -108,9 +108,9 @@ Where we can use GPU ? GPU is typically suitable if:
 
 Applications that don't meet one or more of these criteria would better to be executed by CPU. 
 
-<img width="745" alt="image" src="https://github.com/user-attachments/assets/e69e3e55-f435-49ee-b203-6a36b69b3162">
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/e69e3e55-f435-49ee-b203-6a36b69b3162">
 
-<img width="745" alt="image" src="https://github.com/user-attachments/assets/cdb39e77-3264-47f4-835f-640d50f49395">
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/cdb39e77-3264-47f4-835f-640d50f49395">
 
 
 
