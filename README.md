@@ -31,5 +31,7 @@ Heterogeneous parallel programming means developing software that can use multip
 
 <img width="678" alt="image" src="https://github.com/user-attachments/assets/d0ac6f33-d0cb-40cf-925b-466eff31d22b">
 
+At this moment, we have two main goals 
+
 
 
