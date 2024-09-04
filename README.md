@@ -75,6 +75,17 @@ In the picture above, we see the key terms and concepts in computer hardware arc
    
 So, the question is: how do we choose a processor for our application ? 
 
+The key factors that we consider when choosing a processor for our application are: 
+
+- Performance: How fast and quick we want our tasks to be executed ?
+- Very large installation base: Choosing a processor that is widely used in the industry because it provides better software compatibility and support.
+- Practical form-factor (physical size and shape of processor) and easy accessibility (how easy it is to purchase and and how easily it can be integrated/replaced with common motherboards and system design)
+- Support for IEEE754 floating point standard: IEEE754 defines how floating point numbers should be represented/computed. To calculate accurate floating points consistently and precisely, this support is needed.
+
+<img width="536" alt="image" src="https://github.com/user-attachments/assets/3ab207cf-0e19-4c49-9999-e9d15bffe4fb">
+
+
+
 
 
 
