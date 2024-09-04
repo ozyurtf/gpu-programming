@@ -175,6 +175,14 @@ Lastly, the things that should be empahsized:
 
 So if the memory bandwidth is saturated, this means that GPU is unable to read/write data as quickly as it can process it and this causes to bottleneck in performance. This problem can be solved with using data compression techniques, GPUs with higher memory bandwidth or optimizing memory access patterns. 
 
+### Lecture 1 Notes 
+
+- Communication and memory access are very expensive
+- Sometimes recomputation is less expensive than sending data from multicore to GPU
+- We need to optimize communication and memory - not computation
+
+
+
 
 
 
