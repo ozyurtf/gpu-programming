@@ -180,11 +180,14 @@ So if the memory bandwidth is saturated, this means that GPU is unable to read/w
 - Communication and memory access are very expensive
 - Sometimes recomputation is less expensive than sending data from multicore to GPU
 - We need to optimize communication and memory - not computation
-
-
-
-
-
+- Accelerator is a chip that is designed to execute speical type of applicaiton very fast and very efficient. But it is pretty bad for other tasks. GPU is one of these accelerators. It can execute other applications but it is pretty bad. 
+- The performance should be fast and power is important.
+- GPU has 5 types of memory. All of them are exposed to programmer. It is hard t odecide when the data should go which one of these data will go.
+- Some parts of the program may be parallelized while the other parts may not.
+- Matrix multiplication is the strongest point of GPU.
+- FPGA is another type of accelerator.
+- Transistors are switches: they pass the current or not pass the current
+- 
 
 
 
