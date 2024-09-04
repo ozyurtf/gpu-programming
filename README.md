@@ -158,7 +158,12 @@ Lastly, how do we decide if we should use CPU or GPU ?
  
 - GPUs are better for parallel computation where the total amount of work that is completed over time (throughput) is the priority.
 
-Lastly, the amo
+Lastly, the things that should be empahsized: 
+
+- Not all parts of a program can be easily parallelized. Some tasks have dependencies or require sequential execution. This limits the amount of work that can be put into the GPU. If only small amount of code is parallelizable, the overall speedup of using GPU on running this code may be limited.
+- CPU and GPU need to communicate with each other whenever there are tasks that can be accelerated by putting some of the work to the GPUs parallel processing units. 
+
+And this communication takes additional time. If the amount of data that is transferred from/to GPU to/from CPU, is large or if CPU and GPU need to communicate with each other very frequently, this may reduce the performance and should be taken into account during the system design.
 
 
 
