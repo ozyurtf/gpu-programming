@@ -59,7 +59,7 @@ GPU can transfer data to/from its memory about 10 times faster than a typical mu
 
 This is an important point because GPUs need to feed data to many cores simultaneousy for parallel processing.
 
-<img width="730" alt="image" src="https://github.com/user-attachments/assets/ee48dd71-fd18-4643-8ae9-fd18e2985398">
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/ee48dd71-fd18-4643-8ae9-fd18e2985398">
 
 
 
