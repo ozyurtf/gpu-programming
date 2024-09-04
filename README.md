@@ -21,4 +21,15 @@ And how can we make the application portable ?
 - Adapting to various processing units.
 - Handling different memory architectures.
 
+Heterogeneous parallel programming means developing software that can use multiple processing units simultaneously to take advantage of their unique strengths. But might be these processing units ?
+
+- CPUs (Central Processing Units)
+- GPUs (Graphics Processing Units)
+- FPGAs (Field-Programmable Gate Arrays)
+- DSPs (Digital Signal Sensors)
+- AI Accelerators (e.g., Tensor Processing Units)
+
+<img width="678" alt="image" src="https://github.com/user-attachments/assets/d0ac6f33-d0cb-40cf-925b-466eff31d22b">
+
+
 
