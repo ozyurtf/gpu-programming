@@ -100,6 +100,20 @@ Combining CPU and GPU reduces the overall chip count and makes manufacturing mor
 
 Because the memory is shared between CPU and GPU, we observe performance bottlencek for graphic intensive tasks in addition to more flexible memory allocation. 
 
+Where we can use GPU ? GPU is typically suitable if:
+
+- The application is computation intensive and requires large amounts of data that needs to be processed because GPUs are designed to handle large numbers of calculations in parallel. During this process, data is transferred from/to GPU and if the application is not computationally intensive, it would not be worth to use GPU.
+- The application has many independent computations because GPUs can perform many calculations simultaneously but only if these calculations are independent from each other.
+- The application has many similar computations because GPUs are efficient the most when executing the same instructions across multiple data points.
+
+Applications that don't meet one or more of these criteria would better to be executed by CPU. 
+
+<img width="745" alt="image" src="https://github.com/user-attachments/assets/e69e3e55-f435-49ee-b203-6a36b69b3162">
+
+<img width="745" alt="image" src="https://github.com/user-attachments/assets/cdb39e77-3264-47f4-835f-640d50f49395">
+
+
+
 
 
 
