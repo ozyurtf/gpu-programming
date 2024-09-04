@@ -82,11 +82,13 @@ The key factors that we consider when choosing a processor for our application a
 - Practical form-factor (physical size and shape of processor) and easy accessibility (how easy it is to purchase and and how easily it can be integrated/replaced with common motherboards and system design)
 - Support for IEEE754 floating point standard: IEEE754 defines how floating point numbers should be represented/computed. To calculate accurate floating points consistently and precisely, this support is needed.
 
+In the picture below, we see the architectures of integrated and discrete GPU. 
+
 <img width="536" alt="image" src="https://github.com/user-attachments/assets/3ab207cf-0e19-4c49-9999-e9d15bffe4fb">
 
+**Note**: The northbridge is a chip that connects CPU, RAM, and GPU, and that manages data flow between these components.
 
-
-
+Discrete GPU: Discrete GPUs have a dedicated hardware and memory. These dedicated hardware and memory allow for more powerful
 
 
 
