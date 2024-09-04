@@ -149,10 +149,16 @@ If we want to make this program run 5 times faster, this would not be possible b
 
 In summary improvement in the application speed depends on the portion that is parallelized. 
 
+Lastly, how do we decide if we should use CPU or GPU ? 
 
+- CPUs are better for sequential code or tasks with low/heterogeneous parallelism because
+  - they have branch prediction, out-of-order execution, and some other techniques that are used to maximize the speed of individual instructions and sequential code,
+  - the memory hierarchy in the CPU is optimized for the access patterns of sequential code,
+  - CPUs have advanced mechanisms that allow them to handle branching, conditional execution, and other control flow constrcuts that are common in sequential code.
+ 
+- GPUs are better for parallel computation where the total amount of work that is completed over time (throughput) is the priority.
 
-
-
+Lastly, the amo
 
 
 
