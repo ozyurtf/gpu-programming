@@ -110,6 +110,8 @@ Applications that don't meet one or more of these criteria would better to be ex
 
 <img width="400" alt="image" src="https://github.com/user-attachments/assets/e69e3e55-f435-49ee-b203-6a36b69b3162">
 
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/cdb39e77-3264-47f4-835f-640d50f49395">
+
 At the top of the diagram we see host. The host is typically CPU. And input assembler prepare and send data to the GPU. Thread execution manager manages the distribution and execution of threads across the GPU.
 
 The green squares represent streaming processors. A streaming processor is also called CUDA core. Each streaming processor (each green square) is a processing unit that is capable of executing arithmetic and logical operations. These streaming processors are designed to work in parallel and perform the same operation on different data simultaneously.
@@ -124,7 +126,7 @@ We apply these images because 3D objects are just shapes and we want to add colo
 
 Load/store operations are 
 
-<img width="400" alt="image" src="https://github.com/user-attachments/assets/cdb39e77-3264-47f4-835f-640d50f49395">
+
 
 
 
