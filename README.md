@@ -42,6 +42,8 @@ When we deal with parallel programming, we transition from single-core to multic
 
 The challenge in here is to design computer architectures and software development methods that can run older sequential programs efficiently without causing any slowdowns on new hardware and also allow new/highly parallel programs to take advantage of multiple cores and processors simultaneously for increased performance. 
 
+Some languages made parallel programming easier but none has made it as fast, efficient, and flexible as traditional sequential programming. 
+
 ### GPU vs CPU 
 
 <img width="683" alt="image" src="https://github.com/user-attachments/assets/b5226712-6dc6-411a-859d-4b9d1c92fff2">
