@@ -1,12 +1,15 @@
 # GPU Programming 
 
+We can't pack more features inside the GPU unless you have more transistors. If we can't put more transistors into the GPU, we need another way to improve performance. So, instead of using one GPU, we may use multiple GPUs and make multiple GPUs to interact with each other. But the issue is that if you increase the number of GPUs beyond some number, the communication among them will kill the performance you are getting. 
+
+
 A transistor is a device that can increase the strength of an electronic signal or that can control the flow of the current. 
 
 An integrated circuit (IC) is a mini electronic circuit. It combines transistors, resistors, capacitors, inductors into a single and small chip. 
 
 We can control the software cost by redesigning the software less. But how we can avoid redesigning the software more ? 
 
-Well, we can make the application scalable and portable. But what do we mean by scalability and portability ? Scalability is the ability of the application to handle large amounts of workloads by taking advantage of additional computing resources. Portability, on the other hand, is the ability for the application to run on multiple computing environments with minimal modifications.
+Well, we can make the application scalable and portable. But what do we mean by scalability and portability ? Scalability is the ability of the application to handle large amounts of workloads by taking advantage of additional computing resources. If I take the code written for GPU and run it on another GPU with bigger capabilities, will I see performance improvement ? Portability, on the other hand, is the ability for the application to run on multiple computing environments with minimal modifications. If I am writing a code for the GPU, the code must continue working when a newer GPU comes with minimal change. 
 
 So, how we can make the application scalable ? 
 
