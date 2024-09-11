@@ -48,9 +48,11 @@ Some languages made parallel programming easier but none has made it as fast, ef
 
 <img width="683" alt="image" src="https://github.com/user-attachments/assets/b5226712-6dc6-411a-859d-4b9d1c92fff2">
 
-As we can see from above, the CPU has 4 large complex cores. These cores are designed for general purpose computing. Each of these cores has its own control unit. These control units are responsible from instruction decoding and execution management. They are crucial for managing the flow of instructions in sequential code We also see different levels of caches (L1, L2, and L3) that are used for quick data access. Lastly, there is a DRAM (Dynamic Random Access Memory) that serves as the main memory of the system. It stores the data/instructions that are actively used by the CPU. CPU is optimized for sequential code performance. 
+As we can see from above, the CPU has 4 large complex cores. These cores are designed for general purpose computing. Each of these cores has its own control unit. These control units are responsible from instruction decoding and execution management. They are crucial for managing the flow of instructions in sequential code. In other words, traditional multicore CPU is designed for sequential instruction. We also see different levels of caches (L1, L2, and L3) that are used for quick data access. Lastly, there is a DRAM (Dynamic Random Access Memory) that serves as the main memory of the system. It stores the data/instructions that are actively used by the CPU. CPU is optimized for sequential code performance. 
 
 In the GPU, however, we see smaller and higher number of cores (these are represented as green). These are used for parallel processing. Similarly, we see smaller and higher number of L1 caches and control units. Having a smaller L1 caches and control units minimizes the overhead for individual core control and maximizes space for processing units. Aside from that, we see a single and larger L2 cache that is shared by all cores and DRAM that stores data/instructions that are actively used by the GPU.
+
+When you design DRAM, you can optimize it either for speed latency or you optimize for bandwidth (getting a large amount of data at once). GPU is optimized for bandwidth. It is a little bit slower than CPU but once the process is done, you can get a huge amount of data at once. The memory for multicore CPU is optimized for latency.
 
 GPU can transfer data to/from its memory about 10 times faster than a typical multicore CPU thanks to:
 
@@ -93,13 +95,13 @@ In the picture below, we see the architectures of integrated and discrete GPU.
 
 **Note**: The northbridge is a chip that connects CPU, RAM, and GPU, and that manages data flow between these components.
 
-Discrete GPU: Discrete GPUs have a dedicated hardware and memory. Therefore, they can work as more powerful processors and they can be designed in such a way that they are optimized for specific graph tasks. With discrete GPU, we can do more complex computations and obtain higher frame rates in applications that require many operations. 
+Discrete GPU: Discrete GPUs have a dedicated hardware and memory. You can plug a discrete GPU into the PCI express port.Therefore, they can work as more powerful processors and they can be designed in such a way that they are optimized for specific graph tasks. With discrete GPU, we can do more complex computations and obtain higher frame rates in applications that require many operations. 
 
 Also, having a separate memory that is dedicated to graphics tasks (VRAM) allows faster data access and this is important point for handling large textures and complex 3D models efficiently. 
 
 But the dedicated hardware and memory and additional complexity increase manufacturing costs, require more energy, and generate more heat that needs to be controlled.
 
-Integrated CPU: The resources are shared between CPU and GPU. The important factor in here is power efficiency. Low energy is a key design goal and this makes integrated CPU ideal for mobile devices.
+Integrated GPU: The GPU is embedded inside the multicore CPU. The advantage in here is that the communication between the multicore CPU and GPU is very fast. The disadvantage is that this is a very weak GPU because we don't have space inside the chip to have a fully fledged GPUs. So we have a lower performance compared to discrete GPU . The resources are shared between CPU and GPU. The important factor in here is power efficiency. Low energy is a key design goal and this makes integrated CPU ideal for mobile devices.
 
 Combining CPU and GPU reduces the overall chip count and makes manufacturing more simple. 
 
