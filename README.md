@@ -1,6 +1,8 @@
 
 # GPU Programming 
 
+## Lecture 1
+
 We can't pack more features inside the GPU unless you have more transistors. If we can't put more transistors into the GPU, we need another way to improve performance. So, instead of using one GPU, we may use multiple GPUs and make multiple GPUs to interact with each other. But the issue is that if you increase the number of GPUs beyond some number, the communication among them will kill the performance you are getting. 
 
 
@@ -189,8 +191,15 @@ So if the memory bandwidth is saturated, this means that GPU is unable to read/w
 - Sometimes recomputation is less expensive than sending data from multicore to GPU
 - We need to optimize communication and memory - not computation
 - Accelerator is a chip that is designed to execute speical type of applicaiton very fast and very efficient. But it is pretty bad for other tasks. GPU is one of these accelerators. It can execute other applications but it is pretty bad.
+- The cache in the multicore CPU takes 70% of the space. This is not what we want in GPU.
+- Relationship between clock speed and performance.
+- Pim (processing in memory)
+- Independency is important for GPU but it is very rare to see 100% independence. There is still some dependency to some extent.
+- CUDA core are just execution units. They just execute (Taken picture in Photos)
+- Each group shares the same texture to save more space for execution.
+- System memory is optimized for latency. GPU memory is optimized for bandwidth.
 
-### Lecture 1 Notes - End 
+## Lecture 2
 
 Before GPUs, transformations were done on CPU. 3D objects are represented by vertices (points in 3D space) that are connected to form polygons (a figure with at least three straight sides and angles). The 3D model data that is defined by vertices is converted into 2D pixels on a screen. All the operations that are needed to convert the 3D coordinates to 2D screen positions were performed by the CPU. This was not efficient because CPU had to calculate color and properties of each pixel one at a time sequentially. 
 
