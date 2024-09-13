@@ -5,7 +5,6 @@
 
 We can't pack more features inside the GPU unless you have more transistors. If we can't put more transistors into the GPU, we need another way to improve performance. So, instead of using one GPU, we may use multiple GPUs and make multiple GPUs to interact with each other. But the issue is that if you increase the number of GPUs beyond some number, the communication among them will kill the performance you are getting. 
 
-
 A transistor is a device that can increase the strength of an electronic signal or that can control the flow of the current. 
 
 An integrated circuit (IC) is a mini electronic circuit. It combines transistors, resistors, capacitors, inductors into a single and small chip. 
@@ -112,9 +111,10 @@ Because the memory is shared between CPU and GPU, we observe performance bottlen
 
 Where we can use GPU ? GPU is typically suitable if:
 
-- The application is computation intensive and requires large amounts of data that needs to be processed because GPUs are designed to handle large numbers of calculations in parallel. During this process, data is transferred from/to GPU and if the application is not computationally intensive, it would not be worth to use GPU.
-- The application has many independent computations because GPUs can perform many calculations simultaneously but only if these calculations are independent from each other.
-- The application has many similar computations because GPUs are efficient the most when executing the same instructions across multiple data points.
+- The application is computation intensive and requires large amounts of data that needs to be processed because GPUs are designed to do only computation and to handle large numbers of calculations in parallel. During this process, data is transferred from/to GPU and if the application is not computationally intensive, it would not be worth to use GPU.
+- The application has many independent computations because GPUs can perform many calculations simultaneously but only if these calculations are independent from each other. If a computation is waiting for the result of another computation, this means that the parallelism is reduced. Moving data from the system memory to GPU memory is pretty expensive. That will cancel off what you paid for moving the data from system memory to GPU. 
+- The application has many similar computations because GPUs are efficient the most when executing the same instructions across multiple data points. GPUs are designed in such a way that the same piece of code will be executed on different pieces of data.
+- The size of the problem is big. If you want to do matrix multiplication for 100x100 matrices, it is better to do it sequentially because you are paying a lot to move data and it won't be worth for this kind of small task.
 
 Applications that don't meet one or more of these criteria would better to be executed by CPU. 
 
