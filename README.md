@@ -110,15 +110,17 @@ GPU is typically suitable if:
 
 Applications that don't meet one or more of these criteria would better to be executed by CPU. 
 
+### GPU Architecture
+
 <img width="400" alt="image" src="https://github.com/user-attachments/assets/e69e3e55-f435-49ee-b203-6a36b69b3162">
 
 <img width="400" alt="image" src="https://github.com/user-attachments/assets/cdb39e77-3264-47f4-835f-640d50f49395">
 
 At the top of the diagram we see host. The host is typically CPU. And input assembler prepare and send data to the GPU. Thread execution manager manages the distribution and execution of threads across the GPU.
 
-The green squares represent streaming processors. A streaming processor is also called CUDA core. Each streaming processor (each green square) is a processing unit that is capable of executing arithmetic and logical operations. These streaming processors are designed to work in parallel and perform the same operation on different data simultaneously.
+The green squares represent streaming processors. These are also called execution units or CUDA cores (even though they are actually not like traditional CPU cores). Each streaming processor (each green square) is an execution unit that is capable of executing arithmetic and logical operations. These streaming processors are designed to work in parallel and perform the same operation on different data simultaneously.
 
-A streaming multiprocessor is a processing unit that contains multiple smaller streaming processors. It includes shared memory/L1 cache, texture units, load/store units, and special function units (for complex amth operations). 
+A streaming multiprocessor is a processing unit that contains multiple smaller streaming processors. It includes shared memory/L1 cache, texture units, load/store units, and special function units (for complex math operations). 
 
 Parallel data cache serves as a memory and it stores frequently accessed data. Streaming processors can access data in these caches simultaneously.
 
@@ -130,9 +132,21 @@ Load/store units are specialized circuits that are part of the GPUs. They handle
 
 Load/store units in the GPU are designed in such a way that they combine multiple memory requests into fewer but larger transactions for efficiency. Multiple load/store units operate in parallel to support the many concurrent threads in a GPU. Efficent load/store operations are crucial for tasks such as accessing large datasets. These load/store operations play a key role in matrix multiplications in neural networks. 
 
-The CUDA cores need to communiate with each other in some rare scenarios. At some point, they may need to share some data and have some communication among them. But note that we don't mean connection the cores fully with each other because we don't have space, fully connecting them increases the amount of generated head, and also this would be prohibitive. But we also don't want to disconnect them completely since sometimes they may need to communicate with each other. And if all the CUDA cores are completely disconnected, when some of them needs to communicate with each other, they will have to use this through memory which is quite slow and this will have negative effect on the performance. That's why we see a GPU design like the one above. In this design, a group of execution units are put into group together so that the CUDA cores in each group can communicate with other cores in the same group very quickly. Within the same group, the execution units can send/receive data very quickly without having to use memory. But if an execution unit wants to send data to the execution unit in different group, this has to be done through GPU memory (not the system memory). 
+The CUDA cores need to communiate with each other in some rare scenarios. At some point, they may need to share some data and have some communication among them. But note that we don't mean fully connecting the cores with each other. This would not be logical because we don't have space, fully connecting them increases the amount of generated heat. So, this would be prohibitive. 
 
-The group of execution units is called streaming multiprocessors (SM). An SM contains multiple CUDA cores along with other components like shared memory, cache, and schedulers. 
+But we also don't want to disconnect them completely since sometimes they may need to communicate with each other. And if all the CUDA cores are completely disconnected, they will have to send/receive data through memory which is quite slow and this will have negative effects on the performance. 
+
+Because of these reasons, we see a GPU design in which a group of execution units are put into group together so that the execution units in each group can communicate with other execution units in the same group very quickly. Within the same group, the execution units can send/receive data very quickly without having to use memory. But if an execution unit wants to send data to the execution unit in a different group, this has to be done through GPU memory (not the system memory) which is expensive. 
+
+One note is that although the execution units (green squares) are called streaming processors or CUDA cores, they are neither processors nor cores that we know from the CPU. They are just execution units that are responsible from executing instructions. The execution units in GPU are a little bit more sophisticated than the eexcution units in CPU because they also write the results back to the registers or memory. Every one of the CUDA cores will have its own commit space.
+
+A warp is a group of threads that are executed together in parallel on the GPU. A warp typically consits of 32 threads. All threads in a warp (a group of 32 threads), execute the same instruction at the same time but on a different data. This is part of SIMT (Single Instruction, Multiple Thread). Through this way, GPUs can process large amounts of data quickly. GPU's scheduler works with warps instead of working with individual threads. The warps are scheduled to run on the available processing units. 
+
+For all 32 threads in a warp, the same instruction is fetched once, the instruction is decoded once and the decoded instruction is broadcast to all threads in a warp. In other words, all the threads in a warp share the same front-end (the process of fetch, decode, etc.). This is an important feature because it helps us to save more space for the execution units. So, instead of having a front-end for every one of several thousands of CUDA cores, we allow a group of them to share the same front end.
+
+Also, one additional note is that two streaming multiprocessors may look like they are grouped together but this is done so that each group of streaming multiprocessor share the same texture memory (which is used for graphics application). The reason why we want more than one streaming multiprocessors to share the same texture memory is to save more space for execution units.
+
+### Amdahl's Law
 
 One key point is that we should understand the limitations of optimization and parallelization in computing. To achieve significant speedups, we should optimize/parallelize as much of the program as possible and avoid focusing only one part. Because the overall speedup of a system is limited by the portion of the system that cannot be improved.
 
@@ -155,6 +169,7 @@ If we want to make this program run 5 times faster, this would not be possible b
 
 In summary improvement in the application speed depends on the portion that is parallelized. 
 
+### How to Decide CPU vs GPU
 Lastly, how do we decide if we should use CPU or GPU ? 
 
 - CPUs are better for sequential code or tasks with low/heterogeneous parallelism because
@@ -164,7 +179,7 @@ Lastly, how do we decide if we should use CPU or GPU ?
  
 - GPUs are better for parallel computation where the total amount of work that is completed over time (throughput) is the priority.
 
-Lastly, the things that should be empahsized: 
+The key points that should be empahsized: 
 
 - Not all parts of a program can be easily parallelized. Some tasks have dependencies or require sequential execution. This limits the amount of work that can be put into the GPU. If only small amount of code is parallelizable, the overall speedup of using GPU on running this code may be limited.
 - CPU and GPU need to communicate with each other whenever there are tasks that can be accelerated by putting some of the work to the GPUs parallel processing units. For instance, let's assume that there is a 3D scene or high resolution graphics and CPU wants to send the data that needs to be rendered and rendering isntructions to GPU. After GPU performs the rendering instructions on the data, it sends the output back to the CPU because CPU may need to perform some additional tasks on this output. Also, the CPU is responsible from managing the system's main memory. When GPU finishes its operations, it may need to send the output to main memory so that other parts of the system can access them and CPU handles this data transfer from GPU to memory. Even if GPU may want to send the output to another parts of the computer such as display without going through the CPU, CPU is still involved in setting up the display and managing the overall process. CPU tells the GPU where to render the output and where to display it. The communication between CPU and GPU takes additional time. If the amount of data that is transferred from/to GPU to/from CPU is large or if CPU and GPU need to communicate with each other very frequently, this may reduce the performance and should be taken into account during the system design.
@@ -181,12 +196,12 @@ Lastly, the things that should be empahsized:
 
 So if the memory bandwidth is saturated, this means that GPU is unable to read/write data as quickly as it can process it and this causes to bottleneck in performance. This problem can be solved with using data compression techniques, GPUs with higher memory bandwidth or optimizing memory access patterns. 
 
-### Lecture 1 Notes - Start
+#### Lecture 1 Summary
 
 - Communication and memory access are very expensive
 - Sometimes recomputation is less expensive than sending data from multicore to GPU
 - We need to optimize communication and memory - not computation
-- Accelerator is a chip that is designed to execute speical type of applicaiton very fast and very efficient. But it is pretty bad for other tasks. GPU is one of these accelerators. It can execute other applications but it is pretty bad.
+- Accelerator is a chip that is designed to execute speical type of application very fast and very efficient. But it is pretty bad for other tasks. GPU is one of these accelerators. It can execute other applications but it is pretty bad.
 - The cache in the multicore CPU takes 70% of the space. This is not what we want in GPU.
 - Relationship between clock speed and performance.
 - Pim (processing in memory)
