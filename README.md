@@ -556,11 +556,25 @@ One of the important goals for designing chip is programmability. They should be
 
 In the image above, we see 4 different computer architecture models. 
 
-1) SISD (Single Instruction, Single Data): In this design, one processing unit operates on a single data stream. (Stream in here means a sequence of elements that are processed one after another. These elements could be numbers, pixels, characters, etc. Data stream refers to the input that the processing unit is working on. For instance, if we have image and we want to do image processing, a data stream might be the sequence of pixel values in an image). This design represents a traiditonal, sequential computer architecture.
+1) SISD (Single Instruction, Single Data): In this design, one processing unit (processor/core) operates on a single data stream. (Stream in here means a sequence of elements that are processed one after another. These elements could be numbers, pixels, characters, etc. Data stream refers to the input that the processing unit is working on. For instance, if we have image and we want to do image processing, a data stream might be the sequence of pixel values in an image). This design represents a traiditonal, sequential computer architecture.
 
 2) SIMD (Single Instruction, Multiple Data): In this design, one processing unit operates on different parts of the data simultaneously. This design is common in modern GPUs since it is basically parallel processing of data with the same instruction.
 
-3) MISD (Multiple Instruction, Single Data): Multiple instruction streams operate on a single data stream. THis is rarely used.
+3) MISD (Multiple Instruction, Single Data): Multiple instruction streams operate on a single data stream. THis is rarely used. (Instruction stream is a sequence of operations that the processor need to execute. These are the instructions that tell the processing unit what to do with the data. For instance, an instruction stream might contain operations like "add", "multiply", "load from memory", etc.
 
 4) MIMD (Multiple Instruction, Multiple Data): Multiple instruction streams operate on multiple data streams. This is the most flexible and powerful design. It repreesnts modern multicore processors and parallel computing systems. It can also be seen as fully parallel processing with different instructions on different data.
+
+### Problems Faced by GPU 
+
+1) Under Utilization: Not all tasks are suitable for parallelism. These tasks leave many of the processing units in GPU idle.  
+2) Bandwidth to CPU: GPUs often need to receive data from the CPU to process it and return the processed data back to the CPU. The speed of this data transfer can limit overall performance.
+3) Memory Access: Memory has been a problem in computing from the very beginning until now since it is slow. The memory is about 1000 times slower than your processor and the disk is 1000 times slower than the memory.
+
+### Hardware 
+
+<img width="687" alt="image" src="https://github.com/user-attachments/assets/97a7113c-2fd6-498d-9923-bffedf6a89b6">
+
+Memory controller is a component that is integrated to the CPU or GPU, that contains lots of transistors and that coordinates reading from/writing to RAM. 
+
+North bridge, on the other hand, is a chip that acts as a communication hub. 
 
