@@ -493,6 +493,31 @@ void DFSUtil(int v, std::vector<bool>& visited) {
 
 The code above is not suitable for parallelization because DFS explores the paths sequentially. Each step depends on the result of previous steps. There is a strong sequential dependency because the decision of whether the node should be visited in the next step depends on whether its niehgbors are already visited. Also, we see recursion in the algorithm which is difficult to parallelize in GPU. Also, like in the linked-list, we don't know the number of elements in the data structure in advance. So, the amount of work per node (number of unvisited neighbors) is not known in advance and can vary greatly. This unpredictability makes it difficult to distribute work evenly across parallel processors.
 
+```
+cv::Mat colorImage = cv::imread("image.jpg");
+
+// Create a grayscale image with the same size as the color image
+cv::Mat grayImage = cv::Mat::zeros(colorImage.size(), CV_8UC1);
+
+// Iterate through each pixel to convert to grayscale
+for (int i = 0; i < colorImage.rows; ++i) {
+  for (int j = 0; j < colorImage.cols; ++j) {
+
+    // Get the pixel value (BGR format)
+    cv::Vec3b color = colorImage.at<cv::Vec3b>(i, j);
+
+    // Convert to grayscale using the formula:
+    // gray = 0.299 * R + 0.587 * G + 0.114 * B
+    uchar grayValue = static_cast<uchar>(0.299 * color[2] + 0.587 * color[1] + 0.114 * color[0]);
+
+    // Set the grayscale value
+    grayImage.at<uchar>(i, j) = grayValue;
+  }
+}
+```
+
+Lastly, the code above algorithm is highly parallelizable because each pixel's conversion is independent of others and this makes it ideal for parallel processing.
+
 ## Lecture 2
 
 Before GPUs, transformations were done on the CPU. 3D objects are represented by vertices (points in 3D space). Vertices are represented by their X, Y, and Z coordinates and they are connected to form polygons (a figure with at least three straight sides and angles). The 3D model data that is defined by vertices is converted into 2D pixels on a screen. Before GPUs, all the operations that are needed to convert the 3D coordinates to 2D screen positions were performed by the CPU. This was not efficient because CPU had to calculate color and properties of each pixel one at a time sequentially. 
@@ -514,8 +539,28 @@ In the picture above, the host is the main processor of the computer. It sends c
 
 <img width="489" alt="image" src="https://github.com/user-attachments/assets/6ec0256c-4778-4653-a670-706863b42f4e">
 
+### The Birth of GPU Computing
 
+One of the important goals for designing chip is programmability. They should be easy to program.
 
+- **Step 1:** Designing GPUs in such a way that they perform both floating-point and integer operations efficiently.
+- **Step 2:** Increasing the number of processors to increase data parallelism.
+- **Step 3:** Adding large caches, memory, and control logic to shader processors to make them fully programmable, to increase their flexibility and allow them to run more complex and varied programs (not just predefined graphics operations)
+- **Step 4:** Desiginng multiple shader processors were designed to share caches and control logic to reduce hardware costs and to open up more space for the  execution unit.
+- **Step 5:** Memory load/store instructions were added to allow GPUs to access memory more flexibly, similar to CPUs. This was crucial for many non-graphics algorithms.
+- **Step 6:** CUDA, a software layer, is created to allow programmers to use C/C++ to write programs for GPUs. This made GPU computing accessible to a wide range of programmers.
 
+### SISD, MISD, SIMD, MIMD
 
+<img width="706" alt="image" src="https://github.com/user-attachments/assets/6952d19e-26c9-4987-89f3-530e7769851d">
+
+In the image above, we see 4 different computer architecture models. 
+
+1) SISD (Single Instruction, Single Data): In this design, one processing unit operates on a single data stream. (Stream in here means a sequence of elements that are processed one after another. These elements could be numbers, pixels, characters, etc. Data stream refers to the input that the processing unit is working on. For instance, if we have image and we want to do image processing, a data stream might be the sequence of pixel values in an image). This design represents a traiditonal, sequential computer architecture.
+
+2) SIMD (Single Instruction, Multiple Data): In this design, one processing unit operates on different parts of the data simultaneously. This design is common in modern GPUs since it is basically parallel processing of data with the same instruction.
+
+3) MISD (Multiple Instruction, Single Data): Multiple instruction streams operate on a single data stream. THis is rarely used.
+
+4) MIMD (Multiple Instruction, Multiple Data): Multiple instruction streams operate on multiple data streams. This is the most flexible and powerful design. It repreesnts modern multicore processors and parallel computing systems. It can also be seen as fully parallel processing with different instructions on different data.
 
