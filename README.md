@@ -1,4 +1,3 @@
-
 # GPU Programming 
 
 ## Lecture 1
@@ -209,6 +208,19 @@ So if the memory bandwidth is saturated, this means that GPU is unable to read/w
 - CUDA core are just execution units. They just execute (Taken picture in Photos)
 - Each group shares the same texture to save more space for execution.
 - System memory is optimized for latency. GPU memory is optimized for bandwidth.
+
+## Recitation 1 
+
+Theoretically, GPUs can perform any computation that a traditional CPU can. GPUs are designed to handle many simple calculations simultaneously. For tasks that can be broken down into many independent and similar operations, GPUs can significantly outperform CPUs. Also GPUs have thousands of cores that can execute threads in parallel. 
+
+Although GPUs provide very fast computations for parallel computations, they are not good for general purpose computation which has a lot of sequential computations because of the reaosons below: 
+
+- Low clock speed. Clock speed represents the number of cycles a processor can execute per second. It is a measure of how quickly a processor can perform individual operations. Cycle, on the other hand, means a fundamental unit of operation in digital electronics. During a cycle, a processor performs a basic operation or part of an operation. An example of this might be fetching an instruction, decoding it, executing it, or accessing memory. A clock speed of 3 GHz, for instance, means that the processor completes 3 billion cycles per second. GPUs have a low clock speed because they are designed for massive parallelism with thousansd of cores that are optimized for performing many simple operations simltaneously rather than complex sequential operations. Also, lower clock speeds consume less power per core. With thousands of cores, running at high clock speeds would cause excessive power consumption and heat generation. In addition, the priority of the GPUs is overall throughput over the speed of individual operations. T
+- GPU cores are simple. They are designed to be specialized and to focus on performing specific types of computations efficiently. They are optimized for parallel processing of relatively simple and repetitive tasks.
+- GPUs have a more limited and specialized instruction set compared to CPUs. The instruction set of a processor is the set of basic operations it can perform.
+- GPUs have limited branch prediction. (Branch prediction unit is a special type of hardware CPU has. It guesses the correct path of the control flow statements with >90% accuracy. And this results in a faster execution for sequential operations).
+
+
 
 ## Lecture 2
 
