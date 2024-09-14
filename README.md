@@ -212,26 +212,26 @@ So if the memory bandwidth is saturated, this means that GPU is unable to read/w
 
 ## Lecture 2
 
-Before GPUs, transformations were done on CPU. 3D objects are represented by vertices (points in 3D space) that are connected to form polygons (a figure with at least three straight sides and angles). The 3D model data that is defined by vertices is converted into 2D pixels on a screen. All the operations that are needed to convert the 3D coordinates to 2D screen positions were performed by the CPU. This was not efficient because CPU had to calculate color and properties of each pixel one at a time sequentially. 
+Before GPUs, transformations were done on CPU. 3D objects are represented by vertices (points in 3D space). Vertices are represented by their X, Y, and Z coordinates and they are connected to form polygons (a figure with at least three straight sides and angles). The 3D model data that is defined by vertices is converted into 2D pixels on a screen. Before GPUs, all the operations that are needed to convert the 3D coordinates to 2D screen positions were performed by the CPU. This was not efficient because CPU had to calculate color and properties of each pixel one at a time sequentially. 
 
 <img width="542" alt="image" src="https://github.com/user-attachments/assets/96fc38fb-ff2a-45b0-9fad-f0fb7f1744cd">
 
-In the picture above, the host is the main processor of the computer. It sends commands/data to the GPU. Host interface is an interface between the CPU and GPU. It handles communication and data transfer. As part of the GPU pipeline 
+In computer graphics, each figure is basically made by using triangles. Triangle is made from 3 points (numbers or vertices in other words) and edges that connect these 3 vertices. 
 
-- Vertex control manages the vertex data (3D points). It receives triangle data, converts this triangle data into a form that hardware understands, and stores this converted data in vertex cache. 
-- VS/T & L (Vertex Shading/Transform & Lightin) applies transformations and lighting calculations to vertices.
-- Vertex cache stores processed vertex data for reuse.
-- Triangle setup prepares triangles that are made from vertices for rasterization (converting trianges into pixels).
-- Raster converts triangles into pixels. It determines which pixel falls into which triangle. For each pixel, it interpolates per-pixel values from vertices. 
-- Shader applies color and texture to pixels. It determines the final color of each pixel.
-- ROP (Raster Operations) performs final operations like depth testing and blending. It performs color raster operations that blend the color of overlapping objects for transparency and antialiasing. 
-- FBI (Frame Buffer Interface) manages memory reads/writes.
+In the picture above, the host is the main processor of the computer. It sends commands/data to the GPU. Host interface is an interface between the CPU and GPU. It handles communication and data transfer. Fixed communication pipeline means that the system is not editable. You buy the GPU as it is and you cannot change it. As part of the GPU pipeline:
+
+- **Vertex control** receives vertex data, converts it into a form that hardware understands, and stores it in the vertex cache. 
+- **VS/T & L (Vertex Shading/Transform & Lighting)** applies transformations and lighting calculations to each vertex.
+- **Vertex cache** stores processed vertex data for reuse.
+- During the **triangle setup**, triangles are prepared by using vertices for rasterization. (Rasterization means converting trianges into pixels).
+- During **rasterization**, triangles are converted into pixels and the output is called raster. During the rasterization, which pixel will fall into which triangle is determined. For each pixel, per-pixel values are interpolated from vertices. 
+- **Shader** applies color and texture to pixels. It determines the final color of each pixel.
+- **ROP (Raster Operations)** performs final operations like depth testing and blending. It performs color raster operations that blend the color of overlapping objects for transparency and antialiasing. 
+- **FBI (Frame Buffer Interface)** manages memory reads/writes.
 
 <img width="489" alt="image" src="https://github.com/user-attachments/assets/6ec0256c-4778-4653-a670-706863b42f4e">
 
 Texture cache stores texture data for quick access durign shading. Frame buffer memory stores the final image data before it is displayed on screen. 
-
-
 
 
 
