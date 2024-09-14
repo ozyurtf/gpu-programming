@@ -453,8 +453,9 @@ std::vector<std::vector<int>> transposeMatrix(const std::vector<std::vector<int>
 }
 ```
 
-The code above is highly parallelizable. 
+The code above is highly parallelizable. In one solution, each core can transpose the entire row to a column in the transposed matrix. Instead of transposing the entire row, each core can also tranpose matrix[i][j] individually and this approach is more efficient. 
 
+If we do in-place transposition, we can allow only the cores handling the lower triangular part of the matrix to perform the swaps to prevent race condition.
 
 ## Lecture 2
 
@@ -476,6 +477,7 @@ In the picture above, the host is the main processor of the computer. It sends c
 - **FBI (Frame Buffer Interface)** manages memory reads/writes.
 
 <img width="489" alt="image" src="https://github.com/user-attachments/assets/6ec0256c-4778-4653-a670-706863b42f4e">
+
 
 
 
