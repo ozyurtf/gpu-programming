@@ -220,6 +220,20 @@ Although GPUs provide very fast computations for parallel computations, they are
 - GPUs have a more limited and specialized instruction set compared to CPUs. The instruction set of a processor is the set of basic operations it can perform.
 - GPUs have limited branch prediction. (Branch prediction unit is a special type of hardware CPU has. It guesses the correct path of the control flow statements with >90% accuracy. And this results in a faster execution for sequential operations).
 
+### Heterogeneous Parallel Computing
+
+Multi-core design refers to the design strategy where a chip has multiple independent processing cores. Each of these cores is capable of executing its own threads simultaneously. The goal of multicore is to increase the number of threads (tasks) that can be run sycnhronously but with a focus on high performance for individual tasks that require sequential operations. 
+
+Many-thread design refers to the ability to run thousands of threads in parallel. The cores in the GPU are simpler and smaller compared to the CPU but there are much more of them.
+
+GPUs are evolved to handle parallel tasks such as rendering pixels on a screen and processing each pixel independently of others. This is a highly parallelizable task. Therefore, GPUs were designed to handle many threads simultaneously to maximize throughput.
+
+The term many-thread is associated with GPUs because GPUs are built to handle workloads that involve thousands or even millions of threads in parallel. This allows them to be very good at handling highly parallel tasks such as rendering graphics, deep learning, and scientific computations. 
+
+CPUs focus on running fewer tasks at the same time. Each of these tasks is given more resources compared to GPU (e.g., larger cache, complex control logic) ti maximize performance for sequential tasks. 
+
+In GPUs, each thread doesn't require the same complex control or execution logic that a CPU thread does.
+
 ### Parallelizable Codes 
 
 ```
@@ -456,6 +470,28 @@ std::vector<std::vector<int>> transposeMatrix(const std::vector<std::vector<int>
 The code above is highly parallelizable. In one solution, each core can transpose the entire row to a column in the transposed matrix. Instead of transposing the entire row, each core can also tranpose matrix[i][j] individually and this approach is more efficient. 
 
 If we do in-place transposition, we can allow only the cores handling the lower triangular part of the matrix to perform the swaps to prevent race condition.
+
+```
+void DFS(int start) {
+  std::vector<bool> visited(V, false);
+  DFSUtil(start, visited);
+}
+
+void DFSUtil(int v, std::vector<bool>& visited) {
+  // Mark the current vertex as visited and print it
+  visited[v] = true;
+  std::cout << v << " ";
+
+  // Recur for all the vertices adjacent to this vertex
+  for (const int& neighbor: adjList[v]) {
+    if (!visited[neighbor]) {
+      DFSUtil(neighbor, visited);
+    }
+  }
+}
+```
+
+The code above is not suitable for parallelization because DFS explores the paths sequentially. Each step depends on the result of previous steps. There is a strong sequential dependency because the decision of whether the node should be visited in the next step depends on whether its niehgbors are already visited. Also, we see recursion in the algorithm which is difficult to parallelize in GPU. Also, like in the linked-list, we don't know the number of elements in the data structure in advance. So, the amount of work per node (number of unvisited neighbors) is not known in advance and can vary greatly. This unpredictability makes it difficult to distribute work evenly across parallel processors.
 
 ## Lecture 2
 
