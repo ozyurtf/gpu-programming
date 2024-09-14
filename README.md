@@ -383,14 +383,82 @@ int binarySearch(const std::vector<int>& arr, int left, int right, int target) {
 }
 ```
 
+The binary search algorithm can be parallelized. Let's say we have a sorted array of 16 elements and we're searching for the value 42:
 
+Array: [2, 5, 8, 12, 16, 23, 28, 31, 37, 42, 46, 51, 55, 60, 64, 70]
+Target: 42
 
+Step 1: Initial Division
+We'll divide this into 4 segments, each handled by a different thread:
+Thread 1: [2, 5, 8, 12]
+Thread 2: [16, 23, 28, 31]
+Thread 3: [37, 42, 46, 51]
+Thread 4: [55, 60, 64, 70]
 
+Step 2: Parallel Local Search
+Each thread performs a binary search on its segment:
+Thread 1: 42 > 12, not found
+Thread 2: 42 > 31, not found
+Thread 3: 42 found at local index 1
+Thread 4: 42 < 55, not found
+
+Step 3: Combine Results
+We now know that 42 is in the third segment. We can discard the other segments.
+
+Step 4: Refine Search (if needed)
+In this case, we've found the exact location. But let's say we didn't find it exactly and needed to refine further:
+New array to search: [37, 42, 46, 51]
+
+We could divide this again among threads:
+Thread 1: [37, 42]
+Thread 2: [46, 51]
+
+Step 5: Final Parallel Search
+Thread 1 finds 42 at its local index 1.
+
+Step 6: Combine Final Results
+We determine the global position by calculating:
+Global index = (Segment index * Segment size) + Local index = (2 * 4) + 1 = 9
+Therefore, 42 is at index 9 in the original array.
+
+This example demonstrates how:
+
+- The work is divided among multiple threads.
+- Each thread performs a smaller, local binary search.
+- Results are combined to narrow the search space.
+- The process can be repeated on smaller segments if needed.
+
+In a GPU implementation:
+
+- Each thread would handle its own segment in parallel.
+- Shared memory might be used for faster access to the local segments.
+- Atomic operations or a reduction kernel would be used to combine results.
+
+```
+// Function to calculate the transpose of a matrix
+std::vector<std::vector<int>> transposeMatrix(const std::vector<std::vector<int>>& matrix) {
+  int rows = matrix.size();
+  int cols = matrix[0].size();
+
+  // Create a new matrix to store the transpose
+  std::vector<std::vector<int>> transpose(cols, std::vector<int>(rows));
+
+  // Loop to compute the transpose
+  for (int i = 0; i < rows; ++i) {
+    for (int j = 0; j < cols; ++j) {
+      transpose[j][i] = matrix[i][j];
+    }
+  }
+  return transpose;
+}
+```
+
+The code above is highly parallelizable. 
 
 
 ## Lecture 2
 
-Before GPUs, transformations were done on CPU. 3D objects are represented by vertices (points in 3D space). Vertices are represented by their X, Y, and Z coordinates and they are connected to form polygons (a figure with at least three straight sides and angles). The 3D model data that is defined by vertices is converted into 2D pixels on a screen. Before GPUs, all the operations that are needed to convert the 3D coordinates to 2D screen positions were performed by the CPU. This was not efficient because CPU had to calculate color and properties of each pixel one at a time sequentially. 
+Before GPUs, transformations were done on the CPU. 3D objects are represented by vertices (points in 3D space). Vertices are represented by their X, Y, and Z coordinates and they are connected to form polygons (a figure with at least three straight sides and angles). The 3D model data that is defined by vertices is converted into 2D pixels on a screen. Before GPUs, all the operations that are needed to convert the 3D coordinates to 2D screen positions were performed by the CPU. This was not efficient because CPU had to calculate color and properties of each pixel one at a time sequentially. 
 
 <img width="542" alt="image" src="https://github.com/user-attachments/assets/96fc38fb-ff2a-45b0-9fad-f0fb7f1744cd">
 
