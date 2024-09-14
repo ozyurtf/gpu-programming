@@ -224,14 +224,12 @@ In the picture above, the host is the main processor of the computer. It sends c
 - **VS/T & L (Vertex Shading/Transform & Lighting)** applies transformations and lighting calculations to each vertex.
 - **Vertex cache** stores processed vertex data for reuse.
 - During the **triangle setup**, triangles are prepared by using vertices for rasterization. (Rasterization means converting trianges into pixels).
-- During **rasterization**, triangles are converted into pixels and the output is called raster. During the rasterization, which pixel will fall into which triangle is determined. For each pixel, per-pixel values are interpolated from vertices. 
+- During **rasterization**, triangles are converted into pixels and the output is called raster. During the rasterization, which pixel will fall into which triangle is determined (we determine whether the pixel will be at the edge or between the two triangles, etc.) For each pixel, per-pixel values are interpolated from vertices. 
 - **Shader** applies color and texture to pixels. It determines the final color of each pixel.
 - **ROP (Raster Operations)** performs final operations like depth testing and blending. It performs color raster operations that blend the color of overlapping objects for transparency and antialiasing. 
 - **FBI (Frame Buffer Interface)** manages memory reads/writes.
 
 <img width="489" alt="image" src="https://github.com/user-attachments/assets/6ec0256c-4778-4653-a670-706863b42f4e">
-
-Texture cache stores texture data for quick access durign shading. Frame buffer memory stores the final image data before it is displayed on screen. 
 
 
 
