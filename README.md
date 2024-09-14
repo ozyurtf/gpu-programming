@@ -220,6 +220,172 @@ Although GPUs provide very fast computations for parallel computations, they are
 - GPUs have a more limited and specialized instruction set compared to CPUs. The instruction set of a processor is the set of basic operations it can perform.
 - GPUs have limited branch prediction. (Branch prediction unit is a special type of hardware CPU has. It guesses the correct path of the control flow statements with >90% accuracy. And this results in a faster execution for sequential operations).
 
+### Parallelizable Codes 
+
+```
+// Initialize two vectors of the same size
+std::vector<int> vec1 = {1, 2, 3, 4, 5};
+std::vector<int> vec2 = {6, 7, 8, 9, 10};
+
+// Initialize a vector to store the result
+std::vector<int> result(vec1.size());
+
+// Perform element-wise addition using a for loop
+for (size_t i = 0; i < vec1.size(); ++i) {
+  result[i] = vec1[i] + vec2[i];
+}
+```
+The code that is shown above is parallelizable. Each GPU core can compute result[i] value independently. 
+
+```
+std::vector<std::vector<int>> A = {
+  {1, 2, 3},
+  {4, 5, 6}
+};
+
+std::vector<std::vector<int>> B = {
+  {7, 8},
+  {9, 10},
+  {11, 12}
+};
+
+// Matrix C to store the result, size is A's rows x B's columns
+std::vector<std::vector<int>> C(A.size(), std::vector<int>(B[0].size(), 0));
+
+// Matrix multiplication
+for (size_t i = 0; i < A.size(); ++i) {
+  for (size_t j = 0; j < B[0].size(); ++j) {
+    for (size_t k = 0; k < B.size(); ++k) {
+      C[i][j] += A[i][k] * B[k][j];
+    }
+  }
+}
+```
+
+The code that is shown above is parallelizable as well. Each GPU core can read  ith row of A, jth column of B, take the dot product of this row-column pair to compute C[i][j] and write the result. 
+
+```
+// Define the array (vector)
+std::vector<int> arr = {1, 2, 3, 4, 5, 6, 7, 8};
+
+int sum = 0;
+// Calculate the sum of elements in the array
+
+for (size_t i = 0; i < arr.size(); ++i) {
+  sum += arr[i];
+}
+```
+
+This code can be parallelized but this won't be as easy as the vector addition or matrix multiplication example because in this code, each iteration depends on the result of the previous operation (sum += arr[i]). This dependency creates a race operation. However, this code can still be parallelized using parallel reduction. 
+
+We can basically split the array into smaller chunks. Each of these chunks can be processed by a different GPU thread and each thread can compute a partial sum for its chunk. These partial sums can then be combined in a tree like structure. This process continues until the final sum is computed.
+
+For instance, if we have the array of [1, 2, 3, 4, 5, 6, 7, 8]
+
+Step 1: Split into chunks
+Assume we have 4 GPU threads available. We'll split the array into 4 chunks:
+
+Thread 1: [1, 2]
+Thread 2: [3, 4]
+Thread 3: [5, 6]
+Thread 4: [7, 8]
+
+Step 2: Compute partial sums
+Each thread computes the sum of its chunk:
+
+Thread 1: 1 + 2 = 3
+Thread 2: 3 + 4 = 7
+Thread 3: 5 + 6 = 11
+Thread 4: 7 + 8 = 15
+
+Step 3: Tree-like reduction
+Now we have [3, 7, 11, 15]. We continue summing in parallel, reducing the number of active threads in each step:
+First reduction:
+
+Thread 1: 3 + 7 = 10
+Thread 2: 11 + 15 = 26
+
+Second reduction:
+
+Thread 1: 10 + 26 = 36
+
+Final result: 36
+
+The tree-like structure looks like this:
+
+```
+        36
+      /   \
+    10     26
+   /  \   /  \
+  3   7  11  15
+ / \ / \ / \ / \
+1 2 3  4 5 6 7  8
+
+```
+
+```
+struct Node {
+  int data; // Data part of the node
+  Node* next; // Pointer to the next node
+};
+
+// Function to traverse and update
+void traverse(Node* head) {
+  Node* current = head;
+  while (current != nullptr) {
+    current->data = (current->data %2) ? 0 : current->data;
+    current = current->next;
+  }
+  std::cout << std::endl;
+}
+```
+
+The code shown above is not suitable for parallelizing. Efficient parallelization requires dividing the work evenly among processors or threads. In the example above, we don't know the size of the linked list. So, this lack of size information makes it difficult to divide the work among parallel processors efficiently.
+
+Also, each node in the linked list points to the next node. We can only find the location of the next node after accessing the current node. This sequential dependency prevents us from accessing to nodes in parallel. That's why it is not suitable for parallelizing. 
+
+```
+void bubbleSort(std::vector<int>& arr) {
+  int n = arr.size();
+  for (int i = 0; i < n - 1; ++i) {
+    // Last i elements are already sorted
+    for (int j = 0; j < n - i - 1; ++j) {
+      // Swap if the element is greater than the next element
+      if (arr[j] > arr[j + 1]) {
+        std::swap(arr[j], arr[j + 1]);
+      }
+    }
+  }
+}
+```
+
+Bubble sort is a comparison based algorithm and it repeatedly steps through the list, compares adjacent elements, and swaps them if they are in wrong order. Having frequent, unpredictable swaps between adjacent elements results in data dependencies that are difficult to parallelize efficiently. The random nature of swaps can lead to uneven workloads across parallel processors and frequent memory conflicts.
+
+```
+int binarySearch(const std::vector<int>& arr, int left, int right, int target) {
+  while (left <= right) {
+    int mid = left + (right - left) / 2;
+
+    // Check if target is at mid
+    if (arr[mid] == target)
+      return mid;
+
+    if (arr[mid] < target)
+      left = mid + 1;
+
+    else
+      right = mid - 1;
+  }
+
+  // Return -1 if target is not present in the array
+  return -1;
+}
+```
+
+
+
+
 
 
 ## Lecture 2
