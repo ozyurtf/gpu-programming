@@ -572,9 +572,21 @@ In the image above, we see 4 different computer architecture models.
 
 ### Hardware 
 
+<img width="636" alt="image" src="https://github.com/user-attachments/assets/4dc5dd7a-f43e-4888-8a8e-583bfd9e077c">
+
+North bridge, on the other hand, is a chip that acts as a communication hub. It manages data transfers between the CPU, RAM, and other high-performance components such as GPU. And it does this by using the memory controller that is located inside of it.
+
+<img width="481" alt="image" src="https://github.com/user-attachments/assets/4e5d2e2a-0bf8-45ed-9f08-842f153c10ca">
+
+<img width="502" alt="image" src="https://github.com/user-attachments/assets/bdb7140a-9253-454b-acb3-e0b7fe8a0f5e">
+
+Memory controller, on the other hand, is a component that is integrated to the CPU or GPU. It contains lots of transistors and coordinates reading from/writing to RAM. 
+
 <img width="687" alt="image" src="https://github.com/user-attachments/assets/97a7113c-2fd6-498d-9923-bffedf6a89b6">
 
-Memory controller is a component that is integrated to the CPU or GPU, that contains lots of transistors and that coordinates reading from/writing to RAM. 
+In the picture below, we see a multi CPU computer architecture with an integrated IO hub. Each CPU has its own directly connected memory. This allows faster access to local memory. We also see a direct link between the two CPUs. This allows for direct communication and data sharing between them. This is important for maintaining cache choerency and efficient parallel processing. 
 
-North bridge, on the other hand, is a chip that acts as a communication hub. 
+The IO hub is a component that manages various input and output operations. It acts like a traffic controller for data that moves between different parts of the system. The IO hub is connected to the GPU via a PCI Express interface which we will explain later. 
+
+<img width="531" alt="image" src="https://github.com/user-attachments/assets/2fe6f9d2-7bfa-40f8-8d3b-512804925c0f">
 
