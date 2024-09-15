@@ -572,21 +572,44 @@ In the image above, we see 4 different computer architecture models.
 
 ### Hardware 
 
-<img width="636" alt="image" src="https://github.com/user-attachments/assets/4dc5dd7a-f43e-4888-8a8e-583bfd9e077c">
+<img width="687" alt="image" src="https://github.com/user-attachments/assets/97a7113c-2fd6-498d-9923-bffedf6a89b6">
 
-North bridge, on the other hand, is a chip that acts as a communication hub. It manages data transfers between the CPU, RAM, and other high-performance components such as GPU. And it does this by using the memory controller that is located inside of it.
-
-<img width="481" alt="image" src="https://github.com/user-attachments/assets/4e5d2e2a-0bf8-45ed-9f08-842f153c10ca">
-
-<img width="502" alt="image" src="https://github.com/user-attachments/assets/bdb7140a-9253-454b-acb3-e0b7fe8a0f5e">
+North bridge is a chip that acts as a communication hub. It manages data transfers between the CPU, RAM, and other high-performance components such as GPU. And it does this by using the memory controller that is located inside of it.
 
 Memory controller, on the other hand, is a component that is integrated to the CPU or GPU. It contains lots of transistors and coordinates reading from/writing to RAM. 
 
-<img width="687" alt="image" src="https://github.com/user-attachments/assets/97a7113c-2fd6-498d-9923-bffedf6a89b6">
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/d4bbcc88-9002-474e-a5f3-15d4000dfc25"> \\
 
-In the picture below, we see a multi CPU computer architecture with an integrated IO hub. Each CPU has its own directly connected memory. This allows faster access to local memory. We also see a direct link between the two CPUs. This allows for direct communication and data sharing between them. This is important for maintaining cache choerency and efficient parallel processing. 
+In the two pictures below, we can see the interaction between northbridge, memory controller, and many other components of the computer in more detail. 
 
-The IO hub is a component that manages various input and output operations. It acts like a traffic controller for data that moves between different parts of the system. The IO hub is connected to the GPU via a PCI Express interface which we will explain later. 
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/4e5d2e2a-0bf8-45ed-9f08-842f153c10ca">
+
+<img width="300" alt="image" src="https://github.com/user-attachments/assets/bdb7140a-9253-454b-acb3-e0b7fe8a0f5e">
+
+In addition to these, in the picture below, we see a multi CPU computer architecture with an integrated IO hub. Each CPU has its own directly connected memory. This allows faster access to local memory. We also see a direct link between the two CPUs. This allows for direct communication and data sharing between them. This is important for maintaining cache coherency and efficient parallel processing. 
+
+The IO hub is a component that manages various input and output operations. It acts like a traffic controller for data that moves between different parts of the system. The IO hub is connected to the GPU via a PCI Express. 
 
 <img width="531" alt="image" src="https://github.com/user-attachments/assets/2fe6f9d2-7bfa-40f8-8d3b-512804925c0f">
+
+In the picture below, we see GPU, the architecture of graphics card, and its connection to the main system components. 
+
+<img width="443" alt="image" src="https://github.com/user-attachments/assets/195c8f28-fd44-4838-bbc5-e68d5e753218">
+
+- Host CPU is the main processor of the system.
+- As we mentioned before, north bridge is a chip that manages communications between the CPU, system memory, and other high-speed components using the memory controller that is located inside of it. In newer systems, these functions are typically integrated into the CPU.
+- System DRAM is the main system memory (RAM) used by the CPU.
+- GDDR (Graphics Double Data Rate memory) is a memory chip that is optimized for rapid data transfer between the GPU and GPU memory. It serves as the dedicated memory for the GPU and it is separate from the system's main memory. Through this separation, GPU can process graphics data without competing with the CPU for memory access. GDDR stores textures, frame buffers, and other graphics-related data that the GPU needs to access quickly to during rendering.
+
+### PCIe 
+
+<img width="454" alt="image" src="https://github.com/user-attachments/assets/5254c8c2-af53-4292-aa4f-dfb909c09306">
+
+<img width="508" alt="image" src="https://github.com/user-attachments/assets/72eb6022-4b82-48ee-940c-2d5c84ed0bae">
+
+<img width="749" alt="image" src="https://github.com/user-attachments/assets/e7aca415-6efa-4070-8bae-ef0c3e9a0574">
+
+
+
+
 
