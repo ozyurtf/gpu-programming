@@ -611,11 +611,24 @@ In the picture below, we see GPU, the architecture of graphics card, and its con
 
 ### PCIe 
 
+PCIe is a component that provides high-speed communication between the motherboard and various peripherals such as SSDs, network cards, etc. The data transfer that is made through PCIe is coordinated by the clock signal. This ensures that the sender and receiver operate in sync. 
+
+In PCIe, data bits are sent one after another over a single channel. This is known as serial communication. Through serial commnunication, fewer wires are needed, it becomes easier to maintain signal integrity at high speeds on a single channel, and it becomes easier to increase bandwidth by adding more lanes or inceasing the signalign rate. Also, with parallel communication, the bits may arrive due to difference in wire length, eletromagnetic interference or signal degradation. This issuse is not the case for serial communication. Because only one bit is sent at a time, PCIe can run at much higher clock frequencies and achieve higher data rates.
+
+These factors make PCIe highly efficient and suitable for modern high-speed data transfer needs.
+
+Also, in PCIe, each connection is directly between two devices and this connection is not shared among multiple devices. This is also named as pont-to-point connection. Through this way, it becomes easier to add more devices without affecting the performance of the existing devices. Also, the total amount of data that can be carried through PCIe (bandwidth) is limited. Because each connection is directly between two devices and no connection is shared among multiple devices, each device gets its own dedicated connection the PCIe and this ensures that devices don't have to compete for bandwidth. 
+
+PCIe switch ...
+
 <img width="454" alt="image" src="https://github.com/user-attachments/assets/5254c8c2-af53-4292-aa4f-dfb909c09306">
 
 <img width="508" alt="image" src="https://github.com/user-attachments/assets/72eb6022-4b82-48ee-940c-2d5c84ed0bae">
 
 <img width="749" alt="image" src="https://github.com/user-attachments/assets/e7aca415-6efa-4070-8bae-ef0c3e9a0574">
+
+### NVLink
+
 
 
 
