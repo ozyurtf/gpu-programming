@@ -141,7 +141,15 @@ One note is that although the execution units (green squares) are called streami
 
 A warp is a group of threads that are executed together in parallel on the GPU. A warp typically consits of 32 threads. All threads in a warp (a group of 32 threads), execute the same instruction at the same time but on a different data. This is part of SIMT (Single Instruction, Multiple Thread). Through this way, GPUs can process large amounts of data quickly. GPU's scheduler works with warps instead of working with individual threads. The warps are scheduled to run on the available processing units. 
 
-For all 32 threads in a warp, the same instruction is fetched once, the instruction is decoded once and the decoded instruction is broadcast to all threads in a warp. In other words, all the threads in a warp share the same front-end (the process of fetch, decode, etc.). This is an important feature because it helps us to save more space for the execution units. So, instead of having a front-end for every one of several thousands of CUDA cores, we allow a group of them to share the same front end.
+For all 32 threads in a warp, the same instruction is fetched once, the instruction is decoded once and the decoded instruction is broadcast to all threads in a warp. In other words, all the threads in a warp share the same front-end (the process of fetch, decode, etc.). 
+
+Fetch units and decoder units are collections of circuits and logic elements. They are made up from transistors and they work together to perform their respective functions. The fetch unit typically consists of program counter (PC), memory access logic, and prefetch buffer. Decoder unit consists of instruction register, decoding logic, and microcode ROM. These fetch units and decoder units are physically implemented on the CPU die. 
+
+Having the same front-end for all 32 threads in a warp reduces dependencies between threads because if each thread would manage its own fetch-decode-execute pipeline, some threads might have to wait for others to complete. This would bring more dependencies and reduce parallelism. In addition, if each thread would manage its own front-end, it would result in multiple requests to the instruction cache or memory, and this would increase memory traffic significantly.
+
+Aside from this, GPUs have a fixed die area. This die area is divided into computational units (SPs), control logic (which includes fetch and decode units), caches, memory interfaces, etc. By sharing the same front-end, less area is used for control logic. This allows more space for execution units and results in higher throughput.
+
+Lastly, if all threads share the same front-end, they will be synchronized. Therefore, the system won't need to manage synchronization between these threads and coordination between different parts of the GPU will be simpler/easier to handle.
 
 Also, one additional note is that two streaming multiprocessors may look like they are grouped together but this is done so that each group of streaming multiprocessor share the same texture memory (which is used for graphics application). The reason why we want more than one streaming multiprocessors to share the same texture memory is to save more space for execution units.
 
