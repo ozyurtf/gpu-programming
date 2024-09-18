@@ -720,7 +720,7 @@ This image illustrates the concept of multithreading in GPUs, specifically focus
 
 The image shows a hierarchy: Grid > Blocks > Threads. It demonstrates a configuration of (4x1) blocks, each containing (8x1) threads
 
-The top level is called a "Grid". In this example, the Grid contains a single row of 4 blocks (4x1). The Grid represents the entire computation space for a GPU kernel
+The top level is called a "Grid". In this example, the Grid contains a single row of 4 blocks (4x1). The Grid represents the entire computation space for a GPU kernel. (A kernel is a function that will be executed by a thread on the GPU. Kernels define the computations to be performed by each thread on the GPU and they typically perform a small amount of work per thread. When a kernel is launched, it's executed simultaneously by many threads on the GPU. Kernels are defined within the application code and the application that is running on the CPU launches kernels to execute on the GPU. They allow programmers to express parallelism by specifying the operations that each thread should perform. They are designed to take advantage of the GPU's massive parallelism)
 
 There are 4 blocks in the Grid, labeled as "block 0,0" to "block 0,3". Blocks are units of work that can be distributed across the GPU's streaming multiprocessors. Each block can be processed independently, allowing for scalability across different GPU architectures
 
@@ -732,7 +732,6 @@ This structure allows for two levels of parallelism:
   a) Between blocks: Different blocks can execute on different streaming multiprocessors
   b) Within blocks: The 8 threads in each block can execute in parallel on a single multiprocessor
 
-
 This organization allows GPU programs to scale across different GPU architectures. More powerful GPUs can process more blocks simultaneously
 
 This structure is typical of NVIDIA's CUDA programming model, where programmers define kernel functions that are executed across this grid of blocks and threads
@@ -741,4 +740,27 @@ Understanding this structure is crucial for efficient GPU programming, as it all
 
 ### Scheduling Thread Blocks on SM 
 
+<img width="725" alt="image" src="https://github.com/user-attachments/assets/90eacc3e-a451-478f-8c8c-e29f556e0c13">
 
+The picture above shows how the 4 blocks from the grid are distributed across the 3 available SMs:
+- The thread block (1,1) and (0,0) are assigned to SM 1 to be executed.
+- The thread block (0,1) is assigned to SM 2 to be executed.
+- The thread block (1,0) is assigned to SM 3 to be executed.
+
+This layout illustrates several important concepts in GPU computing:
+
+1. Parallelism: Multiple blocks can run concurrently on different SMs.
+2. Scalability: The same kernel can run on GPUs with different numbers of SMs.
+3. Hardware abstraction: Programmers work with a logical grid of threads, while the GPU handles the physical distribution of work.
+4. Efficient resource utilization: The GPU can balance work across available SMs, even when the number of blocks doesn't evenly divide the number of SMs.
+
+### GPU Programming Model 
+
+• Application can include multiple kernels.
+• Threads of the same block run on the same SM.
+  – Block in an SM is divided into warps of 32 threads each.
+  – A warp is the fundamental unit of dispatch in an SM (dispatch unit refers to the smallest group of threads that the GPU schedules and executes together as a single unit. In NVIDIA GPUs, this unit is the warp).
+• Blocks in a grid can coordinate using global memory
+• Each grid executes a kernel. 
+
+### Scheduling In Modern NVIDIA GPUs
