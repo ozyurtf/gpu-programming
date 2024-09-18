@@ -887,7 +887,7 @@ This layout illustrates several important concepts in GPU computing:
 
 ### Scheduling In Modern NVIDIA GPUs
 
-GPUs typically work on tasks from one application at a time. There is an exclusive access to GPU resources for a single application. Context switch time when the GPU changes from executing tasks for one application to another is ~25 microseconds. This quick switch time allows for efficient sharing of GPU resources among multiple applications, even if not truly simultaneous. 
+GPUs typically work on tasks from one application at a time. There is not an exclusive access to GPU resources for a single application. Context switch time when the GPU changes from executing tasks for one application to another is ~25 microseconds. This quick switch time allows for efficient sharing of GPU resources among multiple applications, even if not truly simultaneous. 
 
 Modern GPUs support concurrent kernel execution. Different kernels from the same application can run at the same time on different parts of the GPU. This feature allows for better utilization of GPU resources and can improve overall application performance. 
 
@@ -901,4 +901,25 @@ Warps (groups of 32 threads) from different blocks or even different kernels can
 6. Time-Sharing: While primarily dedicated to one application, the quick context switch time allows for effective time-sharing of the GPU among multiple applications.
 
 These features contribute to the high performance and flexibility of modern GPUs, allowing them to efficiently handle a wide range of computational tasks across various applications.
+
+# Lecture 3 Notes
+- There is no branch prediction for GPU to leave space for more execution unit.
+- Kernel is a peice fo code that goes to GPU
+- Every thread execute a kernel
+- Every thread has a unique ID in block
+- Blocks also has to have some ID (we decide these IDs)
+- The group of blocks is called grid
+- All blocks must be of the same size
+- All threads in all the blocks should execute the same kernel
+- Assume that each SM has 32 SPs. Once is block assigned to SM and saved in there until execution finishes. One block goes to SM. That lbock has 32 SPs but the block has
+- I didn't understand why there are two groupings of threads: warp and block.
+- L1 is programmer transparent. That's why there is a shared memory in an SM and the SPs can communicate over shared memory instead of L1. You can control shared memory by hand. Global memory is also controllable by the user. You decide what to put inside the shared memory.
+- Kernels from the same application reads from the same global memory.
+- MPS is alternative to CUDA APIs. Designed to enable multi-process CUDA applications to utilizie Hyper-Q capatibilites (Hyper-Q is a feature in NVIDIA's Kepler and later GPUs that allows multiple CPU cores to simultaneously send work to a single GPU). Allows sevral different applications to use the GPU at any point
+- Two level of scheduler: thread scheduler and warp scheduler.
+- Registers are quite different in CPU and GPU. Every SM has thousands of registers in GPU. Registers are under user controller indirectly.
+- Cache coherency is not supported in GPU. If two applications access the same information simultaneously in the global memory, that would cause chaos.
+- All addresses in the GPU are allocated from a continuous 40-bit address space.
+- Global, shared, and local addresses are defined as ranges within this address space and can be accessed by common load/store instructions. 
+
 
