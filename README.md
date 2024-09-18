@@ -712,6 +712,128 @@ Key points:
 3. Vector programming can significantly improve performance for operations on large datasets, especially in fields like scientific computing, image processing, and machine learning.
 4. While compilers can automatically vectorize some code, programmer awareness and optimization can lead to better vectorization and performance.
 
+### Kernel 
+
+A kernel is a function that will be executed by a thread on the GPU. Kernels define the computations to be performed by each thread on the GPU and they typically perform a small amount of work per thread. When a kernel is launched, it's executed simultaneously by many threads on the GPU. Kernels are defined within the application code and the application that is running on the CPU launches kernels to execute on the GPU. They allow programmers to express parallelism by specifying the operations that each thread should perform. They are designed to take advantage of the GPU's massive parallelism. 
+
+Here are some examples of **GPU kernels** in CUDA:
+
+#### 1. **Vector Addition Kernel**
+This is a simple example where two arrays (vectors) are added element-wise.
+
+```cpp
+__global__ void vectorAdd(const float *A, const float *B, float *C, int N) {
+    int idx = threadIdx.x + blockIdx.x * blockDim.x;
+    if (idx < N) {
+        C[idx] = A[idx] + B[idx];
+    }
+}
+```
+- **What it does**: Adds two arrays `A` and `B` element by element and stores the result in array `C`.
+- **How it works**: Each thread computes one element of the result. The total number of threads matches the size of the vectors.
+
+#### 2. **Matrix Multiplication Kernel**
+This example performs matrix multiplication for two 2D matrices.
+
+```cpp
+__global__ void matrixMul(const float *A, const float *B, float *C, int N) {
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+    float sum = 0.0f;
+    
+    if (row < N && col < N) {
+        for (int i = 0; i < N; i++) {
+            sum += A[row * N + i] * B[i * N + col];
+        }
+        C[row * N + col] = sum;
+    }
+}
+```
+- **What it does**: Multiplies two matrices `A` and `B` and stores the result in matrix `C`.
+- **How it works**: Each thread is responsible for computing one element of the output matrix. Threads in a block work together to compute different rows and columns of the result matrix.
+
+#### 3. **Reduction Kernel (Sum of Array)**
+This kernel sums all the elements in an array using a parallel reduction.
+
+```cpp
+__global__ void reduceSum(float *input, float *output, int N) {
+    extern __shared__ float sharedData[];
+    int tid = threadIdx.x;
+    int idx = blockIdx.x * blockDim.x + tid;
+
+    // Load input into shared memory
+    sharedData[tid] = (idx < N) ? input[idx] : 0.0f;
+    __syncthreads();
+
+    // Perform reduction in shared memory
+    for (int s = blockDim.x / 2; s > 0; s >>= 1) {
+        if (tid < s) {
+            sharedData[tid] += sharedData[tid + s];
+        }
+        __syncthreads();
+    }
+
+    // Write the result of this block to global memory
+    if (tid == 0) {
+        output[blockIdx.x] = sharedData[0];
+    }
+}
+```
+- **What it does**: Computes the sum of all elements in an array.
+- **How it works**: Each thread block computes the partial sum of a portion of the array, storing the result in shared memory. Then, these partial sums are combined to get the final result.
+
+#### 4. **Image Blur Kernel (2D Convolution)**
+This kernel performs a simple image blurring operation using a 2D convolution.
+
+```cpp
+__global__ void blurImage(const unsigned char *inputImage, unsigned char *outputImage, int width, int height, const float *filter, int filterWidth) {
+    int x = blockIdx.x * blockDim.x + threadIdx.x;
+    int y = blockIdx.y * blockDim.y + threadIdx.y;
+    
+    if (x < width && y < height) {
+        float blurValue = 0.0f;
+        for (int filterY = 0; filterY < filterWidth; ++filterY) {
+            for (int filterX = 0; filterX < filterWidth; ++filterX) {
+                int imageX = min(max(x + filterX - filterWidth / 2, 0), width - 1);
+                int imageY = min(max(y + filterY - filterWidth / 2, 0), height - 1);
+                blurValue += inputImage[imageY * width + imageX] * filter[filterY * filterWidth + filterX];
+            }
+        }
+        outputImage[y * width + x] = blurValue;
+    }
+}
+```
+- **What it does**: Applies a blurring filter to an image by performing 2D convolution.
+- **How it works**: Each thread processes one pixel by applying a convolution filter over a window of surrounding pixels.
+
+#### 5. **Monte Carlo Simulation Kernel**
+A Monte Carlo simulation kernel that estimates the value of Pi by randomly sampling points inside a unit square.
+
+```cpp
+__global__ void estimatePi(int *count, int numSamples, unsigned int seed) {
+    int tid = blockIdx.x * blockDim.x + threadIdx.x;
+    int localCount = 0;
+    curandState state;
+    curand_init(seed, tid, 0, &state);
+
+    for (int i = tid; i < numSamples; i += blockDim.x * gridDim.x) {
+        float x = curand_uniform(&state);
+        float y = curand_uniform(&state);
+        if (x * x + y * y <= 1.0f) {
+            localCount++;
+        }
+    }
+
+    atomicAdd(count, localCount);
+}
+```
+- **What it does**: Estimates the value of Pi by counting random points that fall inside a unit circle.
+- **How it works**: Each thread generates random points and checks if they lie within a unit circle, then accumulates the result.
+
+---
+
+These are just a few examples of CUDA kernels that perform different computations. In each case, the kernel is a function executed in parallel by many threads on the GPU.
+
 ### Multithreaded in GPUs 
 
 <img width="665" alt="image" src="https://github.com/user-attachments/assets/8295781d-539f-4bff-95bc-31119dfc2368">
@@ -720,7 +842,7 @@ This image illustrates the concept of multithreading in GPUs, specifically focus
 
 The image shows a hierarchy: Grid > Blocks > Threads. It demonstrates a configuration of (4x1) blocks, each containing (8x1) threads
 
-The top level is called a "Grid". In this example, the Grid contains a single row of 4 blocks (4x1). The Grid represents the entire computation space for a GPU kernel. (A kernel is a function that will be executed by a thread on the GPU. Kernels define the computations to be performed by each thread on the GPU and they typically perform a small amount of work per thread. When a kernel is launched, it's executed simultaneously by many threads on the GPU. Kernels are defined within the application code and the application that is running on the CPU launches kernels to execute on the GPU. They allow programmers to express parallelism by specifying the operations that each thread should perform. They are designed to take advantage of the GPU's massive parallelism)
+The top level is called a "Grid". In this example, the Grid contains a single row of 4 blocks (4x1). The Grid represents the entire computation space for a GPU kernel. 
 
 There are 4 blocks in the Grid, labeled as "block 0,0" to "block 0,3". Blocks are units of work that can be distributed across the GPU's streaming multiprocessors. Each block can be processed independently, allowing for scalability across different GPU architectures
 
@@ -764,3 +886,19 @@ This layout illustrates several important concepts in GPU computing:
 • Each grid executes a kernel. 
 
 ### Scheduling In Modern NVIDIA GPUs
+
+GPUs typically work on tasks from one application at a time. There is an exclusive access to GPU resources for a single application. Context switch time when the GPU changes from executing tasks for one application to another is ~25 microseconds. This quick switch time allows for efficient sharing of GPU resources among multiple applications, even if not truly simultaneous. 
+
+Modern GPUs support concurrent kernel execution. Different kernels from the same application can run at the same time on different parts of the GPU. This feature allows for better utilization of GPU resources and can improve overall application performance. 
+
+Warps (groups of 32 threads) from different blocks or even different kernels can be actively executing at the same time. This capability allows for high levels of parallelism and efficient use of GPU resources.
+
+1. Parallelism: GPUs can handle multiple levels of parallelism - within a kernel, across kernels, and even across applications (with some limitations).
+2. Resource Utilization: The ability to run multiple kernels and warps from different blocks simultaneously allows for better utilization of GPU resources.
+3. Flexibility: The GPU can adapt to different workloads, whether they involve a single complex kernel or multiple smaller kernels.
+4. Application Design: Developers can design applications to take advantage of concurrent kernel execution, potentially improving overall performance.
+5. Scheduling Complexity: The GPU's scheduler must manage this complex execution environment, balancing resources across multiple kernels and blocks.
+6. Time-Sharing: While primarily dedicated to one application, the quick context switch time allows for effective time-sharing of the GPU among multiple applications.
+
+These features contribute to the high performance and flexibility of modern GPUs, allowing them to efficiently handle a wide range of computational tasks across various applications.
+
