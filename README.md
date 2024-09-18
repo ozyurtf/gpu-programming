@@ -643,5 +643,102 @@ Advanced switches can prioritize traffic from certain ports or devices, ensuring
 
 These mechanisms allow the switch to effectively manage multiple PCIe connections, expanding connectivity while maintaining performance. 
 
+### NVLink 
+
+NVLink is a high-bandwidth interconnect technology developed by NVIDIA. It's designed to enable fast communication between GPUs (Graphics Processing Units) and, in some cases, between GPUs and CPUs. 
+
+<img width="663" alt="image" src="https://github.com/user-attachments/assets/062a7b21-e106-4e7a-a400-9e8dbfe35f89">
+
+NVLink aims to overcome the bandwidth limitations of traditional PCIe (Peripheral Component Interconnect Express) connections, allowing for much faster data transfer between GPUs.
+
+It can provide significantly higher bandwidth compared to PCIe, with exact speeds varying by generation. For example, NVLink 3.0 can offer up to 600 GB/s bidirectional bandwidth between GPUs.
+
+It's particularly useful in high-performance computing, deep learning, and AI applications where multiple GPUs need to work together efficiently.
+
+NVLink allows for more flexible and efficient scaling of multi-GPU systems, improving overall system performance in GPU-intensive tasks.
+
+In some implementations, NVLink can also connect GPUs directly to CPUs, further enhancing system performance.
+
+NVLink plays a crucial role in enabling more powerful and efficient multi-GPU computing systems, particularly for demanding applications in scientific research, AI, and data analytics.
+
+### Modern GPU Hardware
+
+<img width="533" alt="image" src="https://github.com/user-attachments/assets/f512dce5-91fb-4d8e-afed-0b1b57240c20">
+
+Why there is L2 cache while there is a shared memory and global memory ? What are the things that make L2 cache necessary while shared memory and global memory exist ?
+
+Global memory, while large, is relatively slow to access. Shared memory is fast but small and limited to each SM. L2 cache acts as an intermediate layer, bridging the speed gap between the fast but limited shared memory and the slow but large global memory.
+
+Frequent accesses to global memory can create a bottleneck. L2 cache helps reduce this pressure by storing frequently accessed data closer to the SMs. This reduces the number of times the GPU needs to access the high-latency global memory.
+
+Shared memory is local to each SM and can't be directly accessed by other SMs. L2 cache provides a way for different SMs to share data more efficiently than going through global memory every time.
+
+Shared memory is limited in size and managed by the programmer or compiler. L2 cache automatically stores recently used data that may not fit or may not be explicitly placed in shared memory.
+
+While shared memory is great for predictable access patterns, L2 cache can improve performance for more irregular memory access patterns that are common in many algorithms.
+
+L2 cache helps hide the latency of global memory accesses by providing faster access to recently used data.
+
+In summary, while shared memory provides fast, explicitly managed storage for each SM, and global memory provides large capacity, the L2 cache plays a crucial role in balancing performance, efficiency, and ease of use. It helps manage data that doesn't fit neatly into the shared memory model while significantly reducing the performance penalty of accessing global memory. This three-tiered memory structure (shared memory, L2 cache, global memory) allows GPUs to maintain high performance across a wide range of applications and access patterns.
+
+<img width="652" alt="image" src="https://github.com/user-attachments/assets/3ce33f40-09b2-4134-9812-7feeb75af4fe">
+
+### Scalar Program vs Vector Program
+
+<img width="266" alt="image" src="https://github.com/user-attachments/assets/8d6d565e-27ff-4b39-9808-e7682a6b70cf">
+<img width="704" alt="image" src="https://github.com/user-attachments/assets/a861f804-925c-4307-ac87-f69da050e02f">
+
+These images illustrate the difference between scalar and vector programming approaches, particularly in the context of parallel processing.
+
+Image 1 shows a scalar program:
+1. It declares a 2D array A[4][8] of floats.
+2. It uses nested for loops to iterate over each element of the array.
+3. The outer loop (i) iterates 4 times, and the inner loop (j) iterates 8 times.
+4. Each iteration increments the value of A[i][j].
+
+This is a traditional scalar approach where operations are performed sequentially on individual data elements.
+
+Image 2 explains vector programming:
+1. "Vector width is exposed to programmers" means that programmers can explicitly work with groups of data elements (vectors) rather than individual elements.
+2. It compares scalar vs. vector approaches:
+   - Scalar: processes one element (A[i][j]) at a time using a single Processing Element (PE).
+   - Vector: processes multiple elements simultaneously using multiple PEs.
+3. The image shows a "Vector of width 8", where 8 elements (A[i][0] to A[i][7]) are processed in parallel by 8 PEs (PE 0 to PE 7).
+4. "Vectorizing compilers are doing good job, if helped by the programmer!" suggests that modern compilers can automatically vectorize code, but programmer assistance can improve this process.
+
+Key points:
+1. Scalar programming processes one data element at a time.
+2. Vector programming processes multiple data elements simultaneously, utilizing parallel processing capabilities of modern hardware.
+3. Vector programming can significantly improve performance for operations on large datasets, especially in fields like scientific computing, image processing, and machine learning.
+4. While compilers can automatically vectorize some code, programmer awareness and optimization can lead to better vectorization and performance.
+
+### Multithreaded in GPUs 
+
+<img width="665" alt="image" src="https://github.com/user-attachments/assets/8295781d-539f-4bff-95bc-31119dfc2368">
+
+This image illustrates the concept of multithreading in GPUs, specifically focusing on the organization of threads and blocks in a GPU's parallel processing structure. Let's break it down in more detail:
+
+The image shows a hierarchy: Grid > Blocks > Threads. It demonstrates a configuration of (4x1) blocks, each containing (8x1) threads
+
+The top level is called a "Grid". In this example, the Grid contains a single row of 4 blocks (4x1). The Grid represents the entire computation space for a GPU kernel
+
+There are 4 blocks in the Grid, labeled as "block 0,0" to "block 0,3". Blocks are units of work that can be distributed across the GPU's streaming multiprocessors. Each block can be processed independently, allowing for scalability across different GPU architectures
+
+The image zooms in on one block to show its internal structure. Each block contains 8 threads in a single row (8x1 configuration). Threads within a block can cooperate and share resources
+
+Threads are the smallest units of parallel execution. In this example, there are 8 threads per block, numbered from 0,0 to 0,7. Each thread executes the same kernel code but typically operates on different data
+
+This structure allows for two levels of parallelism:
+  a) Between blocks: Different blocks can execute on different streaming multiprocessors
+  b) Within blocks: The 8 threads in each block can execute in parallel on a single multiprocessor
+
+
+This organization allows GPU programs to scale across different GPU architectures. More powerful GPUs can process more blocks simultaneously
+
+This structure is typical of NVIDIA's CUDA programming model, where programmers define kernel functions that are executed across this grid of blocks and threads
+
+Understanding this structure is crucial for efficient GPU programming, as it allows developers to organize their computations to take full advantage of the GPU's parallel processing capabilities. The programmer needs to divide the problem into appropriate grid, block, and thread configurations to achieve optimal performance.
+
+### Scheduling Thread Blocks on SM 
 
 
