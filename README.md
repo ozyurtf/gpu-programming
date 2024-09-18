@@ -613,13 +613,11 @@ In the picture below, we see GPU, the architecture of graphics card, and its con
 
 PCIe is a component that provides high-speed communication between the motherboard and various peripherals such as SSDs, network cards, etc. The data transfer that is made through PCIe is coordinated by the clock signal. This ensures that the sender and receiver operate in sync. 
 
-In PCIe, data bits are sent one after another over a single channel. This is known as serial communication. Through serial commnunication, fewer wires are needed, it becomes easier to maintain signal integrity at high speeds on a single channel, and it becomes easier to increase bandwidth by adding more lanes or inceasing the signalign rate. Also, with parallel communication, the bits may arrive due to difference in wire length, eletromagnetic interference or signal degradation. This issuse is not the case for serial communication. Because only one bit is sent at a time, PCIe can run at much higher clock frequencies and achieve higher data rates.
+In PCIe, data bits are sent one after another over a single channel. This is known as serial communication. Through serial commnunication, fewer wires are needed, it becomes easier to maintain signal integrity at high speeds on a single channel, and it becomes easier to increase bandwidth by adding more lanes or inceasing the signaling rate. Also, with parallel communication, the bits may arrive due to difference in wire length, eletromagnetic interference or signal degradation. This issuse is not the case for serial communication. Because only one bit is sent at a time, PCIe can run at much higher clock frequencies and achieve higher data rates.
 
 These factors make PCIe highly efficient and suitable for modern high-speed data transfer needs.
 
 Also, in PCIe, each connection is directly between two devices and this connection is not shared among multiple devices. This is also named as pont-to-point connection. Through this way, it becomes easier to add more devices without affecting the performance of the existing devices. Also, the total amount of data that can be carried through PCIe (bandwidth) is limited. Because each connection is directly between two devices and no connection is shared among multiple devices, each device gets its own dedicated connection the PCIe and this ensures that devices don't have to compete for bandwidth. 
-
-PCIe switch ...
 
 <img width="454" alt="image" src="https://github.com/user-attachments/assets/5254c8c2-af53-4292-aa4f-dfb909c09306">
 
@@ -627,10 +625,23 @@ PCIe switch ...
 
 <img width="749" alt="image" src="https://github.com/user-attachments/assets/e7aca415-6efa-4070-8bae-ef0c3e9a0574">
 
-### NVLink
+Also, PCIe switch is a device that expands the connectivity options of PCIe interfaces.
 
+<img width="1101" alt="image" src="https://github.com/user-attachments/assets/21e31c5b-ddee-4c0d-9b94-cdc7e93609c9">
 
+It contains multiple sets of PCIe lanes. It can take a single upstream port (connected to the host system) and divide it into multiple downstream ports. The switch examines the headers of PCIe packets to determine their destination. It then routes these packets to the appropriate downstream port or back to the upstream port.
 
+Switches include buffers to temporarily store data packets. This allows them to manage traffic flow when different devices operate at different speeds or when there's congestion.
+
+When multiple devices try to communicate simultaneously, the switch arbitrates access to the upstream port, ensuring fair and efficient use of bandwidth.
+
+The switch manages PCIe protocol details like flow control, error handling, and power management for connected devices.
+
+It can perform address translation between the system's memory space and the address spaces of connected devices, enabling efficient communication.
+
+Advanced switches can prioritize traffic from certain ports or devices, ensuring critical data gets through first.
+
+These mechanisms allow the switch to effectively manage multiple PCIe connections, expanding connectivity while maintaining performance. 
 
 
 
