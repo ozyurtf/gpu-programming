@@ -880,8 +880,8 @@ This layout illustrates several important concepts in GPU computing:
 
 - Application can include multiple kernels.
 - Threads of the same block run on the same SM.
-  – Block in an SM is divided into warps of 32 threads each.
-  – A warp is the fundamental unit of dispatch in an SM (dispatch unit refers to the smallest group of threads that the GPU schedules and executes together as a single unit. In NVIDIA GPUs, this unit is the warp).
+  - Block in an SM is divided into warps of 32 threads each.
+  - A warp is the fundamental unit of dispatch in an SM (dispatch unit refers to the smallest group of threads that the GPU schedules and executes together as a single unit. In NVIDIA GPUs, this unit is the warp).
 - Blocks in a grid can coordinate using global memory
 - Each grid executes a kernel. 
 
