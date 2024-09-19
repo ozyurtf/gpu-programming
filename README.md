@@ -1051,7 +1051,7 @@ As we mentioned, there are three types of memory within this address space:
 
 All these memory types can be accessed using the same set of load and store instructions. This uniformity simplifies programming and allows for more flexible memory usage.
 
-# Lecture 3 Notes
+## Lecture 3 
 - There is no branch prediction for GPU to leave space for more execution unit.
 - Kernel is a peice fo code that goes to GPU
 - Every thread execute a kernel
