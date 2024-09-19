@@ -1072,6 +1072,5 @@ All these memory types can be accessed using the same set of load and store inst
 - Global, shared, and local addresses are defined as ranges within this address space and can be accessed by common load/store instructions. These load/store instructions support 64 bit addresses to allow for future growth.
 - CUDA is on top of C, C++, Fortran.
 - GPU parllelism (number of SPs or SMs) is doubling almost every year.
-- 
 
 
