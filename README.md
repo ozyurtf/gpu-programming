@@ -920,7 +920,7 @@ To address these issues, NVIDIA introduced Hyper-Q technology. This technology a
 
 Let's walk through the process of executing a kernel on a GPU, which involves threads, blocks, and warps. We'll use a simple example of adding two large vectors element-wise.
 
-Step 1: Kernel Definition
+**Step 1: Kernel Definition**\
 First, we define a kernel function that will be executed on the GPU. This function describes the operation each thread will perform.
 
 ```cuda
@@ -932,7 +932,7 @@ __global__ void vectorAdd(float* A, float* B, float* C, int size) {
 }
 ```
 
-Step 2: Kernel Launch
+**Step 2: Kernel Launch**\
 The host (CPU) launches the kernel, specifying the number of blocks and threads per block.
 
 ```cuda
@@ -941,43 +941,43 @@ int blocksPerGrid = (size + threadsPerBlock - 1) / threadsPerBlock;
 vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, size);
 ```
 
-Step 3: GPU Scheduling
+**Step 3: GPU Scheduling**\
 The GPU has a scheduler that decides which blocks go to which SMs. The GPU's scheduler receives the kernel launch command and begins distributing blocks to available Streaming Multiprocessors (SMs). Blocks are groups of threads that can communicate with each other, that can share data using shared memory, and that can be easily synchronized with each other. GPUs have multiple SMs and each of these SMs is capable of running blocks independently. By distributing blocks of SMs, we can make a better use of the GPU's total computational sources. Blocks are typically assigned to SMs as they become available, not all at once. The scheduler tries to keep all SMs busy by distributing blocks evenly. The scheduler takes into account each SM's available resources (registers, shared memory) when assigning blocks.
 
-Step 4: Block Assignment
+**Step 4: Block Assignment**\
 Each SM is assigned one or more blocks. The SM is responsible for executing all threads within its assigned blocks.
 
-Step 5: Warp Formation
+**Step 5: Warp Formation**\
 Within each block, threads are grouped into warps (typically 32 threads per warp). These warps are the fundamental unit of execution on the GPU.
 
-Step 6: Warp Scheduling
+**Step 6: Warp Scheduling**\
 The SM's warp scheduler selects warps that are ready to execute and issues instructions to them.
 
-Step 7: Instruction Execution
+**Step 7: Instruction Execution**\
 All threads in a warp execute the same instruction simultaneously (SIMT - Single Instruction, Multiple Thread).
 
 - In our example, each thread calculates its global index `i`.
 - It checks if `i` is within the vector's size.
 - If so, it performs the addition `C[i] = A[i] + B[i]`.
 
-Step 8: Memory Access
+**Step 8: Memory Access**\
 As threads perform memory operations, the GPU's memory system handles these requests:
 - Global memory accesses are coalesced when possible for efficiency.
 - Shared memory might be used for data that's accessed multiple times within a block.
 
-Step 9: Warp Divergence Handling
+**Step 9: Warp Divergence Handling**\
 If threads within a warp take different paths (e.g., some threads have `i < size` while others don't), the warp executes both paths, disabling threads that don't need to execute each path.
 
-Step 10: Warp Completion
+**Step 10: Warp Completion**\
 As warps complete their execution, the SM's resources become available for other warps.
 
-Step 11: Block Completion
+**Step 11: Block Completion**\
 When all warps in a block have completed, the block's resources are freed, and the SM can begin executing another block if available.
 
-Step 12: Kernel Completion
+**Step 12: Kernel Completion**\
 The kernel execution is complete when all blocks have finished processing.
 
-Step 13: Result Availability
+**Step 13: Result Availability**\
 The results of the computation (in our case, the sum vector C) are now available in GPU memory and can be copied back to the host if needed.
 
 This process demonstrates how the concepts of threads, blocks, warps, and kernels work together to execute parallel computations on a GPU. The hierarchical organization allows for efficient scheduling and execution across different levels of parallelism, from individual threads up to the entire grid of blocks.
