@@ -902,6 +902,155 @@ Warps (groups of 32 threads) from different blocks or even different kernels can
 
 These features contribute to the high performance and flexibility of modern GPUs, allowing them to efficiently handle a wide range of computational tasks across various applications.
 
+There are two types of scheduling process: scheduling thread blocks to various SMs, and distribution the warps of 32 threads to the execution units. 
+
+#### Multi-Process Service (MPS) 
+
+GPUs (Graphics Processing Units) contain many hardware resources that programs can use for computation. However, it's often difficult or impossible to develop programs that fully utilize all these resources, leading to what's known as the "under-utilization" problem. One potential solution to this problem is to run multiple applications on the same GPU simultaneously, which could increase overall resource utilization. However, there are several challenges to implementing this solution:
+
+- Unlike CPUs, GPUs lack fine-grained sharing mechanisms. This means they don't have sophisticated ways to divide their resources among multiple tasks.
+- GPUs don't have virtual memory, a feature in CPUs that allows multiple programs to share memory safely and efficiently.
+- Context switching (changing from one task to another) is very expensive in terms of performance on GPUs. This is because GPUs typically work with large amounts of data, and moving this data around during a switch takes a lot of time and resources.
+
+To address these issues, NVIDIA introduced Hyper-Q technology. This technology allows multiple CPU threads to launch work on a single GPU, effectively improving the GPU's ability to handle multiple tasks.
+
+<img width="737" alt="image" src="https://github.com/user-attachments/assets/cfaec691-d655-48eb-8d2b-8737c8221e9f">
+
+### Step-by-Step Process of Executing a Kernel on a GPU
+
+Let's walk through the process of executing a kernel on a GPU, which involves threads, blocks, and warps. We'll use a simple example of adding two large vectors element-wise.
+
+Step 1: Kernel Definition
+First, we define a kernel function that will be executed on the GPU. This function describes the operation each thread will perform.
+
+```cuda
+__global__ void vectorAdd(float* A, float* B, float* C, int size) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i < size) {
+        C[i] = A[i] + B[i];
+    }
+}
+```
+
+Step 2: Kernel Launch
+The host (CPU) launches the kernel, specifying the number of blocks and threads per block.
+
+```cuda
+int threadsPerBlock = 256;
+int blocksPerGrid = (size + threadsPerBlock - 1) / threadsPerBlock;
+vectorAdd<<<blocksPerGrid, threadsPerBlock>>>(d_A, d_B, d_C, size);
+```
+
+Step 3: GPU Scheduling
+The GPU has a scheduler that decides which blocks go to which SMs. The GPU's scheduler receives the kernel launch command and begins distributing blocks to available Streaming Multiprocessors (SMs). Blocks are groups of threads that can communicate with each other, that can share data using shared memory, and that can be easily synchronized with each other. GPUs have multiple SMs and each of these SMs is capable of running blocks independently. By distributing blocks of SMs, we can make a better use of the GPU's total computational sources. Blocks are typically assigned to SMs as they become available, not all at once. The scheduler tries to keep all SMs busy by distributing blocks evenly. The scheduler takes into account each SM's available resources (registers, shared memory) when assigning blocks.
+
+Step 4: Block Assignment
+Each SM is assigned one or more blocks. The SM is responsible for executing all threads within its assigned blocks.
+
+Step 5: Warp Formation
+Within each block, threads are grouped into warps (typically 32 threads per warp). These warps are the fundamental unit of execution on the GPU.
+
+Step 6: Warp Scheduling
+The SM's warp scheduler selects warps that are ready to execute and issues instructions to them.
+
+Step 7: Instruction Execution
+All threads in a warp execute the same instruction simultaneously (SIMT - Single Instruction, Multiple Thread).
+
+- In our example, each thread calculates its global index `i`.
+- It checks if `i` is within the vector's size.
+- If so, it performs the addition `C[i] = A[i] + B[i]`.
+
+Step 8: Memory Access
+As threads perform memory operations, the GPU's memory system handles these requests:
+- Global memory accesses are coalesced when possible for efficiency.
+- Shared memory might be used for data that's accessed multiple times within a block.
+
+Step 9: Warp Divergence Handling
+If threads within a warp take different paths (e.g., some threads have `i < size` while others don't), the warp executes both paths, disabling threads that don't need to execute each path.
+
+Step 10: Warp Completion
+As warps complete their execution, the SM's resources become available for other warps.
+
+Step 11: Block Completion
+When all warps in a block have completed, the block's resources are freed, and the SM can begin executing another block if available.
+
+Step 12: Kernel Completion
+The kernel execution is complete when all blocks have finished processing.
+
+Step 13: Result Availability
+The results of the computation (in our case, the sum vector C) are now available in GPU memory and can be copied back to the host if needed.
+
+This process demonstrates how the concepts of threads, blocks, warps, and kernels work together to execute parallel computations on a GPU. The hierarchical organization allows for efficient scheduling and execution across different levels of parallelism, from individual threads up to the entire grid of blocks.
+
+### Fermi 
+
+<img width="748" alt="image" src="https://github.com/user-attachments/assets/318a878b-9422-44ae-9d0e-e89655bf7f87">
+
+Let's say we're performing the operation: A + B = C, where A and B are floating-point numbers.
+
+1. Dispatch Port:
+   - The dispatch port receives the instruction from the warp scheduler.
+   - Example: It receives the instruction to add two floating-point numbers.
+
+2. Operand Collector:
+   - This unit gathers the necessary data (operands) for the operation.
+   - It fetches the values of A and B from registers or memory.
+   - Example: It collects the values A = 3.14 and B = 2.86.
+
+3. FP Unit (Floating Point Unit):
+   - Since our operation involves floating-point numbers, the FP unit will be used.
+   - It performs the actual computation.
+   - Example: The FP unit adds 3.14 and 2.86, resulting in 6.00.
+
+4. INT Unit (Integer Unit):
+   - While not used in our floating-point example, this unit would handle integer operations.
+   - It would be used for operations like integer addition, bitwise operations, etc.
+
+5. Result Queue:
+   - After the computation is complete, the result is placed in the result queue.
+   - From here, it can be written back to registers or memory.
+   - Example: The result 6.00 is placed in the queue to be written to the destination (C).
+
+Workflow example:
+
+1. The warp scheduler issues an add instruction to the Dispatch Port.
+2. The Dispatch Port sends this instruction to the Operand Collector.
+3. The Operand Collector fetches the values 3.14 (A) and 2.86 (B) from registers.
+4. These operands are sent to the FP Unit along with the add instruction.
+5. The FP Unit performs the addition: 3.14 + 2.86 = 6.00.
+6. The result (6.00) is placed in the Result Queue.
+7. From the Result Queue, the result is written back to the register or memory location for C.
+
+This process happens in parallel across multiple CUDA cores, allowing for high-throughput computation. The INT Unit would be used similarly for integer operations, following the same general flow but performing integer arithmetic instead of floating-point arithmetic.
+
+The entire process is designed for efficiency, allowing the GPU to perform massive numbers of similar operations in parallel, which is key to its performance in tasks like graphics rendering, scientific simulations, and machine learning computations.
+
+### Memory Hierarchy 
+
+The GPU uses a 40-bit address space, which allows for 2^40 = 1,099,511,627,776 bytes (1 terabyte) of addressable memory. This large, unified address space allows for flexible memory management across different types of GPU memory.
+
+A unified address space in the context of GPU memory hierarchy refers to a more consistent and integrated way of handling different types of memory. All types of memory (global, shared, local) are part of the same 40-bit address space and this means there's a single, coherent way to reference memory locations, regardless of the memory type. Therefore, the same load/store instructions can be used to access different types of memory and programmers don't need to use separate instruction sets for different memory types, simplifying the programming model. Also, in unified address space, it's easier to move data between different memory types or to change how memory is used in a program without major code restructuring. Developers can think of memory more holistically, rather than as completely separate systems. This can reduce the complexity of memory management in GPU programming.
+
+Imagine you're developing a program that initially uses global memory for a certain data structure. With a unified approach, if you later decide that this data would benefit from being in shared memory for performance reasons, the change might be as simple as altering the memory allocation, without needing to change how the data is accessed in your code.
+
+While this unified approach doesn't eliminate all the complexities of GPU memory management (developers still need to be aware of performance implications of different memory types), it does provide a more streamlined and flexible framework for working with GPU memory.
+
+As we mentioned, there are three types of memory within this address space:
+
+- Global Memory:
+  - Accessible by all threads across all streaming multiprocessors (SMs).
+  - Typically the largest but slowest memory.
+
+- Shared Memory:
+  - Shared among threads within the same thread block.
+  - Faster than global memory, but smaller in size.
+
+- Local Memory:
+  - Private to each thread.
+  - Used for thread-specific variables that don't fit in registers.
+
+All these memory types can be accessed using the same set of load and store instructions. This uniformity simplifies programming and allows for more flexible memory usage.
+
 # Lecture 3 Notes
 - There is no branch prediction for GPU to leave space for more execution unit.
 - Kernel is a peice fo code that goes to GPU
@@ -920,6 +1069,9 @@ These features contribute to the high performance and flexibility of modern GPUs
 - Registers are quite different in CPU and GPU. Every SM has thousands of registers in GPU. Registers are under user controller indirectly.
 - Cache coherency is not supported in GPU. If two applications access the same information simultaneously in the global memory, that would cause chaos.
 - All addresses in the GPU are allocated from a continuous 40-bit address space.
-- Global, shared, and local addresses are defined as ranges within this address space and can be accessed by common load/store instructions. 
+- Global, shared, and local addresses are defined as ranges within this address space and can be accessed by common load/store instructions. These load/store instructions support 64 bit addresses to allow for future growth.
+- CUDA is on top of C, C++, Fortran.
+- GPU parllelism (number of SPs or SMs) is doubling almost every year.
+- 
 
 
